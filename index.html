@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 
@@ -46,7 +45,7 @@
             }
         }
     </script>
-        <style>
+    <style>
         * {
             box-sizing: border-box;
         }
@@ -367,15 +366,6 @@
             pointer-events: none;
         }
     </style>
-    <script>
-document.addEventListener('keydown', function(e) {
-    if (e.key === "F12" || 
-        (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) || 
-        (e.ctrlKey && e.key === "U")) {
-        e.preventDefault();
-    }
-});
-</script>
 </head>
 
 <body class="h-full overflow-hidden flex flex-col font-sans antialiased">
@@ -424,24 +414,6 @@ document.addEventListener('keydown', function(e) {
                 </div>
 
             </div>
-
-            <script>
-/* Deshabilitar clic derecho */
-document.addEventListener('contextmenu', e => e.preventDefault());
-
-/* Bloquear atajos comunes */
-document.addEventListener('keydown', e => {
-  const k = e.key.toUpperCase();
-  if (
-    k === 'F12' ||
-    (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(k)) ||
-    (e.ctrlKey && k === 'U')
-  ) {
-    e.preventDefault();
-  }
-});
-</script>
-            
         </header>
 
         <!-- MAIN CONTENT -->
@@ -926,6 +898,22 @@ document.addEventListener('keydown', e => {
         </footer>
     </div>
 
+    <script>
+        /* Deshabilitar clic derecho */
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        /* Bloquear atajos comunes */
+        document.addEventListener('keydown', e => {
+            const k = e.key.toUpperCase();
+            if (
+                k === 'F12' ||
+                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(k)) ||
+                (e.ctrlKey && k === 'U')
+            ) {
+                e.preventDefault();
+            }
+        });
+    </script>
     <script>
         // Update date
         const today = new Date();
