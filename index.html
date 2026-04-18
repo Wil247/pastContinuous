@@ -1,1 +1,1404 @@
 
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Learning Platform - Environment & Weather</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(3deg);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-8px) rotate(-1deg);
+            }
+
+            75% {
+                transform: translateX(8px) rotate(1deg);
+            }
+        }
+
+        @keyframes confetti {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                top: -60px;
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(14, 165, 233, 0.6);
+            }
+        }
+
+        /* Background */
+        body {
+            background: linear-gradient(135deg, #0c4a6e 0%, #1e3a5f 50%, #0f172a 100%);
+            background-attachment: fixed;
+        }
+
+        /* Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Cards */
+        .card {
+            animation: slideUp 0.5s ease-out forwards;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        /* Vocabulary */
+        .emoji-display {
+            font-size: 6rem;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+        }
+
+        /* Quiz Options */
+        .quiz-option {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .quiz-option:hover:not(:disabled) {
+            transform: translateX(8px);
+            background: linear-gradient(90deg, #e0f2fe, #f0f9ff);
+        }
+
+        .quiz-option.correct {
+            background: linear-gradient(90deg, #10b981, #059669) !important;
+            color: white;
+            animation: pulse 0.5s ease-out;
+        }
+
+        .quiz-option.incorrect {
+            background: linear-gradient(90deg, #ef4444, #dc2626) !important;
+            color: white;
+            animation: shake 0.4s ease-out;
+        }
+
+        /* Matching Game */
+        .match-item {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .match-item:hover:not(.matched):not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.2);
+        }
+
+        .match-item.selected {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
+            color: white;
+            transform: scale(1.05);
+            animation: glow 1.5s ease-in-out infinite;
+        }
+
+        .match-item.matched {
+            background: linear-gradient(135deg, #374151, #1f2937) !important;
+            color: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .match-item.wrong {
+            animation: shake 0.3s ease-out;
+            background: #fecaca !important;
+        }
+
+        /* Sentence Builder */
+        .sentence-word {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sentence-word:hover:not(.selected) {
+            transform: translateY(-4px) scale(1.05);
+        }
+
+        .sentence-word.selected {
+            background: linear-gradient(135deg, #94a3b8, #64748b) !important;
+            color: white;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Falling Game */
+        .game-word {
+            animation: fall 4.5s linear forwards;
+            position: absolute;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .game-word:hover {
+            transform: scale(1.1);
+        }
+
+        .game-board {
+            position: relative;
+            height: 420px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+            border-radius: 20px;
+            box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0ea5e9, #d946ef);
+            border-radius: 10px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Marquee */
+        .marquee {
+            animation: marquee 25s linear infinite;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b, #475569);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #475569, #334155);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Decorative Elements */
+        .decoration-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(217, 70, 239, 0.1));
+            filter: blur(40px);
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body class="h-full overflow-hidden flex flex-col font-sans antialiased">
+    <div id="app" class="h-full w-full flex flex-col relative">
+        <!-- Decorative Background Elements -->
+        <div class="decoration-circle w-96 h-96 -top-48 -left-48 fixed"></div>
+        <div class="decoration-circle w-80 h-80 top-1/2 -right-40 fixed"></div>
+        <div class="decoration-circle w-64 h-64 bottom-20 left-1/4 fixed"></div>
+
+        <!-- HEADER -->
+        <header class="glass px-6 py-5 sticky top-0 z-50 shadow-lg">
+            <div class="max-w-7xl mx-auto flex flex-col gap-3">
+
+                <!-- FILA 1 -->
+                <div class="relative flex items-center justify-between w-full">
+
+                    <!-- ESPACIO IZQUIERDO (para balance visual) -->
+                    <div class="w-[180px]"></div>
+
+                    <!-- TÍTULO CENTRADO -->
+                    <h1 id="schoolName"
+                        class="absolute left-1/2 -translate-x-1/2 text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                        English Class
+                    </h1>
+
+                    <!-- FECHA DERECHA -->
+                    <p class="text-base text-slate-600" id="currentDate">
+                        📅 18/04/2026
+                    </p>
+
+                </div>
+
+                <!-- FILA 2 -->
+                <div class="flex items-center justify-between w-full">
+
+                    <!-- DOCENTE IZQUIERDA -->
+                    <p class="text-base text-black" id="teacherInfo">
+                        👨‍🏫 <strong class="text-green-600">Docente:</strong> Wilfran Luis Decena
+                    </p>
+
+                    <!-- VALOR DERECHA -->
+                    <p class="text-base font-semibold text-black text-right" id="monthValue">
+                        📅 <strong class="text-green-600">Valor del mes:</strong> Compañerismo y Participación
+                    </p>
+
+                </div>
+
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 overflow-auto">
+            <div class="max-w-7xl mx-auto px-6 py-8">
+
+                <!-- HOME SECTION -->
+                <section id="home" class="section active">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
+                            🌍 Environment & Weather
+                        </h2>
+                        <p class="text-xl text-primary-200 max-w-2xl mx-auto">
+                            Master English vocabulary and grammar through fun, interactive activities
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Vocabulary Card -->
+                        <div class="card glass rounded-3xl p-8 cursor-pointer group" onclick="showSection('vocabulary')"
+                            style="animation-delay: 0.1s">
+                            <div class="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">📚</div>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-2">Vocabulary</h3>
+                            <p class="text-slate-500">Learn 20+ weather words with audio & translations</p>
+                            <div class="mt-4 flex items-center text-primary-600 font-medium">
+                                <span>Start Learning</span>
+                                <svg class="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Grammar Card -->
+                        <div class="card glass rounded-3xl p-8 cursor-pointer group" onclick="showSection('grammar')"
+                            style="animation-delay: 0.2s">
+                            <div class="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">✏️</div>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-2">Grammar</h3>
+                            <p class="text-slate-500">Master Past Continuous with clear examples</p>
+                            <div class="mt-4 flex items-center text-primary-600 font-medium">
+                                <span>Learn More</span>
+                                <svg class="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Quiz Card -->
+                        <div class="card glass rounded-3xl p-8 cursor-pointer group" onclick="showSection('quiz')"
+                            style="animation-delay: 0.3s">
+                            <div class="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">❓</div>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-2">Quiz</h3>
+                            <p class="text-slate-500">Test your knowledge with 25 questions</p>
+                            <div class="mt-4 flex items-center text-primary-600 font-medium">
+                                <span>Take Quiz</span>
+                                <svg class="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Games Card -->
+                        <div class="card glass rounded-3xl p-8 cursor-pointer group" onclick="showSection('games')"
+                            style="animation-delay: 0.4s">
+                            <div class="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">🎮</div>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-2">Games</h3>
+                            <p class="text-slate-500">4 interactive games to practice & have fun</p>
+                            <div class="mt-4 flex items-center text-primary-600 font-medium">
+                                <span>Play Now</span>
+                                <svg class="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VOCABULARY SECTION -->
+                <section id="vocabulary" class="section">
+                    <div class="max-w-2xl mx-auto">
+                        <div class="card glass rounded-3xl p-8 md:p-12 min-h-[450px] flex flex-col justify-between">
+                            <div class="text-center">
+                                <div class="emoji-display" id="vocabEmoji">☀️</div>
+                                <h3 class="text-4xl font-bold text-slate-800 mt-6 mb-2 cursor-pointer hover:text-primary-600 transition-colors flex items-center justify-center gap-3"
+                                    id="vocabWord" onclick="speakWord()">
+                                    <span id="vocabWordText">Sunny</span>
+                                    <svg class="w-8 h-8 text-primary-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                    </svg>
+                                </h3>
+                                <p class="text-2xl text-slate-500 mb-3" id="vocabTranslation">Soleado</p>
+                                <div class="bg-gradient-to-r from-primary-50 to-accent-50 rounded-2xl p-4 mt-4">
+                                    <p class="text-lg text-primary-700 italic font-medium" id="vocabExample">"The sun
+                                        was shining brightly."</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 justify-center mt-8">
+                                <button
+                                    class="btn-primary text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2"
+                                    onclick="nextVocab()">
+                                    Next Word
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                    </svg>
+                                </button>
+                                <button class="btn-secondary text-white px-8 py-4 rounded-xl font-bold text-lg"
+                                    onclick="showSection('home')">
+                                    Back
+                                </button>
+                            </div>
+                        </div>
+                        <div class="progress-bar mt-6">
+                            <div class="progress-fill" id="vocabProgress" style="width: 0%;"></div>
+                        </div>
+                        <p class="text-center text-primary-200 text-sm mt-3 font-medium" id="vocabCounter">1 / 20</p>
+                    </div>
+                </section>
+
+                <!-- GRAMMAR SECTION -->
+                <section id="grammar" class="section">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="card glass rounded-3xl p-8 md:p-10">
+                            <div class="flex items-center gap-3 mb-8">
+                                <span class="text-4xl">📖</span>
+                                <h2 class="text-3xl font-bold text-slate-800">Past Continuous Tense</h2>
+                            </div>
+
+                            <!-- What is it -->
+                            <div
+                                class="bg-gradient-to-r from-primary-50 to-primary-100 p-6 rounded-2xl mb-6 border-l-4 border-primary-500">
+                                <h3 class="text-xl font-bold text-primary-700 mb-3 flex items-center gap-2">
+                                    <span>📚</span> What is Past Continuous?
+                                </h3>
+                                <p class="text-slate-700 leading-relaxed">
+                                    The Past Continuous tense describes an action that <strong>was happening</strong> at
+                                    a specific time in the past.
+                                    It shows an ongoing or continuous action that was interrupted or happening while
+                                    something else took place.
+                                </p>
+                                <div class="mt-4 p-4 bg-white/70 rounded-xl">
+                                    <p class="text-slate-700"><strong>Example:</strong> "I was studying when the phone
+                                        rang"</p>
+                                    <p class="text-slate-500 text-sm mt-1">The studying was happening continuously until
+                                        it was interrupted.</p>
+                                </div>
+                            </div>
+
+                            <!-- Structure -->
+                            <div class="bg-gradient-to-r from-accent-50 to-accent-100 p-6 rounded-2xl mb-6">
+                                <h3 class="text-xl font-bold text-accent-700 mb-3 flex items-center gap-2">
+                                    <span>🔧</span> Structure
+                                </h3>
+                                <div class="bg-white/70 p-4 rounded-xl text-center">
+                                    <p class="text-xl font-mono text-slate-800">
+                                        <span class="bg-primary-200 px-2 py-1 rounded">Subject</span> +
+                                        <span class="bg-accent-200 px-2 py-1 rounded">was/were</span> +
+                                        <span class="bg-green-200 px-2 py-1 rounded">Verb + -ing</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Examples -->
+                            <div class="bg-gradient-to-r from-green-50 to-emerald-100 p-6 rounded-2xl mb-6">
+                                <h3 class="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
+                                    <span>✅</span> Examples
+                                </h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-xl">
+                                        <span class="text-green-500">•</span>
+                                        <div>
+                                            <strong class="text-slate-800">It was raining</strong>
+                                            <span class="text-slate-600"> all morning.</span>
+                                            <span class="text-slate-400 text-sm block">(Estaba lloviendo toda la
+                                                mañana)</span>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-xl">
+                                        <span class="text-green-500">•</span>
+                                        <div>
+                                            <strong class="text-slate-800">The sun was shining</strong>
+                                            <span class="text-slate-600"> brightly.</span>
+                                            <span class="text-slate-400 text-sm block">(El sol brillaba
+                                                intensamente)</span>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-xl">
+                                        <span class="text-green-500">•</span>
+                                        <div>
+                                            <strong class="text-slate-800">They were playing</strong>
+                                            <span class="text-slate-600"> while the wind </span>
+                                            <strong class="text-slate-800">was blowing</strong>.
+                                            <span class="text-slate-400 text-sm block">(Estaban jugando mientras el
+                                                viento soplaba)</span>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start gap-3 bg-white/70 p-3 rounded-xl">
+                                        <span class="text-green-500">•</span>
+                                        <div>
+                                            <strong class="text-slate-800">I was walking</strong>
+                                            <span class="text-slate-600"> when </span>
+                                            <strong class="text-slate-800">lightning was flashing</strong>.
+                                            <span class="text-slate-400 text-sm block">(Estaba caminando cuando había
+                                                rayos)</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- When to Use -->
+                            <div class="bg-gradient-to-r from-amber-50 to-orange-100 p-6 rounded-2xl mb-8">
+                                <h3 class="text-xl font-bold text-amber-700 mb-4 flex items-center gap-2">
+                                    <span>💡</span> When to Use
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-3">
+                                    <div class="bg-white/70 p-3 rounded-xl">
+                                        <span class="text-amber-600 font-semibold">🔄 Simultaneous Actions</span>
+                                        <p class="text-sm text-slate-600 mt-1">Two actions happening at the same time in
+                                            the past</p>
+                                    </div>
+                                    <div class="bg-white/70 p-3 rounded-xl">
+                                        <span class="text-amber-600 font-semibold">⚡ Interrupted Actions</span>
+                                        <p class="text-sm text-slate-600 mt-1">"I was studying when the phone rang"</p>
+                                    </div>
+                                    <div class="bg-white/70 p-3 rounded-xl">
+                                        <span class="text-amber-600 font-semibold">📝 Descriptions</span>
+                                        <p class="text-sm text-slate-600 mt-1">"The weather was getting cold"</p>
+                                    </div>
+                                    <div class="bg-white/70 p-3 rounded-xl">
+                                        <span class="text-amber-600 font-semibold">🎬 Background</span>
+                                        <p class="text-sm text-slate-600 mt-1">"It was raining when we arrived"</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="w-full btn-secondary text-white px-8 py-4 rounded-xl font-bold text-lg"
+                                onclick="showSection('home')">
+                                Back to Home
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- QUIZ SECTION -->
+                <section id="quiz" class="section">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="card glass rounded-3xl p-8 md:p-10">
+                            <div class="flex justify-between items-center mb-8">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-4xl">❓</span>
+                                    <h2 class="text-3xl font-bold text-slate-800">Quiz Time!</h2>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm text-slate-500 mb-2">Question <span id="qNum"
+                                            class="font-bold text-primary-600">1</span>/25</p>
+                                    <div class="progress-bar w-32">
+                                        <div class="progress-fill" id="quizProgress" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="quizContent">
+                                <p class="text-xl text-slate-800 font-semibold mb-6 leading-relaxed" id="quizQuestion">
+                                </p>
+                                <div id="quizAnswers" class="space-y-3"></div>
+                            </div>
+
+                            <div id="quizResults" class="hidden text-center py-8">
+                                <div class="text-6xl mb-4">🎉</div>
+                                <h3 class="text-3xl font-bold text-slate-800 mb-4">Quiz Complete!</h3>
+                                <div
+                                    class="bg-gradient-to-r from-primary-50 to-accent-50 rounded-2xl p-6 mb-6 inline-block">
+                                    <p class="text-lg text-slate-600">Your Score</p>
+                                    <p class="text-5xl font-bold text-primary-600" id="finalScore">0</p>
+                                    <p class="text-slate-500">out of 25</p>
+                                </div>
+                                <div class="flex gap-4 justify-center">
+                                    <button class="btn-primary text-white px-8 py-4 rounded-xl font-bold"
+                                        onclick="restartQuiz()">
+                                        Try Again
+                                    </button>
+                                    <button class="btn-secondary text-white px-8 py-4 rounded-xl font-bold"
+                                        onclick="showSection('home')">
+                                        Back Home
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GAMES SECTION -->
+                <section id="games" class="section">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="text-center mb-8">
+                            <h2 class="text-4xl font-bold text-white mb-2">🎮 Learning Games</h2>
+                            <p class="text-primary-200">Choose a game to practice and have fun!</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="card glass rounded-3xl p-8 cursor-pointer group" onclick="startGame(1)"
+                                style="animation-delay: 0.1s">
+                                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🎯</div>
+                                <h3 class="text-2xl font-bold text-slate-800 mb-2">Matching Game</h3>
+                                <p class="text-slate-500">Match weather words with their correct definitions</p>
+                                <div class="mt-4 text-sm text-slate-400">8 pairs to match • 3 lives</div>
+                            </div>
+
+                            <div class="card glass rounded-3xl p-8 cursor-pointer group" onclick="startGame(2)"
+                                style="animation-delay: 0.2s">
+                                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🧩</div>
+                                <h3 class="text-2xl font-bold text-slate-800 mb-2">Sentence Builder</h3>
+                                <p class="text-slate-500">Arrange words to form correct sentences</p>
+                                <div class="mt-4 text-sm text-slate-400">8 sentences • 3 lives</div>
+                            </div>
+
+                            <div class="card glass rounded-3xl p-8 cursor-pointer group" onclick="startGame(3)"
+                                style="animation-delay: 0.3s">
+                                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🤔</div>
+                                <h3 class="text-2xl font-bold text-slate-800 mb-2">Guess the Word</h3>
+                                <p class="text-slate-500">Read the definition and guess the word</p>
+                                <div class="mt-4 text-sm text-slate-400">10 words • 3 lives</div>
+                            </div>
+
+                            <div class="card glass rounded-3xl p-8 cursor-pointer group" onclick="startGame(4)"
+                                style="animation-delay: 0.4s">
+                                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">⬇️</div>
+                                <h3 class="text-2xl font-bold text-slate-800 mb-2">Falling Words</h3>
+                                <p class="text-slate-500">Click weather words, avoid wrong ones!</p>
+                                <div class="mt-4 text-sm text-slate-400">Fast-paced • 5 lives</div>
+                            </div>
+                        </div>
+
+                        <button class="w-full btn-secondary text-white px-8 py-4 rounded-xl font-bold text-lg mt-8"
+                            onclick="showSection('home')">
+                            Back to Home
+                        </button>
+                    </div>
+                </section>
+
+                <!-- MATCHING GAME -->
+                <section id="matchingGame" class="section">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="card glass rounded-3xl p-8">
+                            <div class="flex justify-between items-center mb-8">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-3xl">🎯</span>
+                                    <h2 class="text-2xl font-bold text-slate-800">Matching Game</h2>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="bg-green-100 px-4 py-2 rounded-xl">
+                                        <span class="text-green-600 font-bold">⭐ <span id="matchScore">0</span></span>
+                                    </div>
+                                    <div class="bg-red-100 px-4 py-2 rounded-xl">
+                                        <span class="text-red-600 font-bold">❌ <span id="matchFails">0</span>/3</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="matchingContent" class="space-y-4"></div>
+                            <button class="w-full btn-secondary text-white px-8 py-4 rounded-xl font-bold mt-8"
+                                onclick="showSection('games')">
+                                Back to Games
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SENTENCE BUILDER GAME -->
+                <section id="sentenceGame" class="section">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="card glass rounded-3xl p-8">
+                            <div class="flex justify-between items-center mb-8">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-3xl">🧩</span>
+                                    <h2 class="text-2xl font-bold text-slate-800">Sentence Builder</h2>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="bg-green-100 px-4 py-2 rounded-xl">
+                                        <span class="text-green-600 font-bold">⭐ <span id="sentScore">0</span></span>
+                                    </div>
+                                    <div class="bg-red-100 px-4 py-2 rounded-xl">
+                                        <span class="text-red-600 font-bold">❌ <span id="sentFails">0</span>/3</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="sentenceContent"></div>
+                            <button class="w-full btn-secondary text-white px-8 py-4 rounded-xl font-bold mt-8"
+                                onclick="showSection('games')">
+                                Back to Games
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GUESS GAME -->
+                <section id="guessGame" class="section">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="card glass rounded-3xl p-8">
+                            <div class="flex justify-between items-center mb-8">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-3xl">🤔</span>
+                                    <h2 class="text-2xl font-bold text-slate-800">Guess the Word</h2>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="bg-green-100 px-4 py-2 rounded-xl">
+                                        <span class="text-green-600 font-bold">⭐ <span id="guessScore">0</span></span>
+                                    </div>
+                                    <div class="bg-red-100 px-4 py-2 rounded-xl">
+                                        <span class="text-red-600 font-bold">❌ <span id="guessFails">0</span>/3</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="guessContent"></div>
+                            <button class="w-full btn-secondary text-white px-8 py-4 rounded-xl font-bold mt-8"
+                                onclick="showSection('games')">
+                                Back to Games
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FALLING WORDS GAME -->
+                <section id="fallingGame" class="section">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="card glass rounded-3xl p-8">
+                            <div class="flex justify-between items-center mb-6">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-3xl">⬇️</span>
+                                    <h2 class="text-2xl font-bold text-slate-800">Falling Words</h2>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="bg-green-100 px-4 py-2 rounded-xl">
+                                        <span class="text-green-600 font-bold">⭐ <span id="fallScore">0</span></span>
+                                    </div>
+                                    <div class="bg-red-100 px-4 py-2 rounded-xl">
+                                        <span class="text-red-600 font-bold">❌ <span id="fallFails">0</span>/5</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-slate-500 text-center mb-4">🟢 Click weather words • 🔴 Avoid other words</p>
+                            <div class="game-board" id="gameBoard"></div>
+                            <button class="w-full btn-secondary text-white px-8 py-4 rounded-xl font-bold mt-6"
+                                onclick="stopFallingGame(); showSection('games')">
+                                Back to Games
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="glass-dark px-6 py-4 mt-auto">
+            <div class="overflow-hidden">
+                <div class="marquee text-base text-white/90 whitespace-nowrap">
+                    👨‍🏫 <strong class="text-green-300">Teacher:</strong> Wilfran Luis Decena
+                    &nbsp;|&nbsp;
+                    📅 <strong class="text-green-300">Monthly Value:</strong> Respect
+                    &nbsp;|&nbsp;
+                    📚 Learn Together
+                    &nbsp;|&nbsp;
+                    🌍 Grow Together
+                    &nbsp;|&nbsp;
+                    ✨ Be Respectful
+                    &nbsp;|&nbsp;
+                    👨‍🏫 <strong class="text-green-300">Teacher:</strong> Wilfran Luis Decena
+                    &nbsp;|&nbsp;
+                    📅 <strong class="text-green-300">Monthly Value:</strong> Respect
+                    &nbsp;|&nbsp;
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Update date
+        const today = new Date();
+        document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Vocabulary Data
+        const vocabulary = [
+            { word: 'Sunny', emoji: '☀️', translation: 'Soleado', example: 'The sun was shining brightly.' },
+            { word: 'Rainy', emoji: '🌧️', translation: 'Lluvioso', example: 'It was raining all morning.' },
+            { word: 'Cloudy', emoji: '☁️', translation: 'Nublado', example: 'It was getting cloudy in the afternoon.' },
+            { word: 'Snowy', emoji: '❄️', translation: 'Nevado', example: 'It was snowing in the mountains.' },
+            { word: 'Rainbow', emoji: '🌈', translation: 'Arcoíris', example: 'A rainbow was appearing in the sky.' },
+            { word: 'Windy', emoji: '💨', translation: 'Ventoso', example: 'The wind was blowing strongly.' },
+            { word: 'Stormy', emoji: '⛈️', translation: 'Tormentoso', example: 'The storm was coming quickly.' },
+            { word: 'Foggy', emoji: '🌫️', translation: 'Brumoso', example: 'The sky was getting foggy.' },
+            { word: 'Lightning', emoji: '⚡', translation: 'Rayo', example: 'Lightning was flashing in the night.' },
+            { word: 'Hot', emoji: '🔥', translation: 'Caliente', example: 'It was getting hot at noon.' },
+            { word: 'Warm', emoji: '🌤️', translation: 'Templado', example: 'The weather was becoming warm.' },
+            { word: 'Cool', emoji: '🧊', translation: 'Fresco', example: 'The air was feeling cool.' },
+            { word: 'Cold', emoji: '❄️', translation: 'Frío', example: 'It was getting cold at night.' },
+            { word: 'Freezing', emoji: '🥶', translation: 'Congelado', example: 'It was freezing early in the morning.' },
+            { word: 'Heat Wave', emoji: '🌞', translation: 'Onda de calor', example: 'A heat wave was affecting the city.' },
+            { word: 'Hurricane', emoji: '🌀', translation: 'Huracán', example: 'A hurricane was forming in the ocean.' },
+            { word: 'Hail', emoji: '🧊', translation: 'Granizo', example: 'Hail was falling heavily.' },
+            { word: 'Humid', emoji: '💧', translation: 'Húmedo', example: 'The air was becoming humid.' },
+            { word: 'Spring', emoji: '🌸', translation: 'Primavera', example: 'It was raining during spring.' },
+            { word: 'Summer', emoji: '☀️', translation: 'Verano', example: 'The sun was shining in summer.' }
+        ];
+
+        let currentVocabIndex = 0;
+
+        function nextVocab() {
+            currentVocabIndex = (currentVocabIndex + 1) % vocabulary.length;
+            updateVocab();
+        }
+
+        function updateVocab() {
+            const word = vocabulary[currentVocabIndex];
+            document.getElementById('vocabEmoji').textContent = word.emoji;
+            document.getElementById('vocabWordText').textContent = word.word;
+            document.getElementById('vocabTranslation').textContent = word.translation;
+            document.getElementById('vocabExample').textContent = `"${word.example}"`;
+            document.getElementById('vocabCounter').textContent = `${currentVocabIndex + 1} / ${vocabulary.length}`;
+            document.getElementById('vocabProgress').style.width = `${((currentVocabIndex + 1) / vocabulary.length) * 100}%`;
+            setTimeout(() => speakWord(), 400);
+        }
+
+        function speakWord() {
+            const word = vocabulary[currentVocabIndex].word;
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.rate = 0.85;
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Quiz Data
+        const quizQuestions = [
+            { q: "What tense describes an action happening in the past?", opts: ["Past Continuous", "Present Simple", "Future Simple", "Present Perfect"], ans: 0 },
+            { q: "Fill: 'It __ raining when I arrived'", opts: ["was", "is", "are", "were"], ans: 0 },
+            { q: "Which sentence is correct?", opts: ["They was playing", "They were playing", "They are playing", "They was be playing"], ans: 1 },
+            { q: "The rainbow __ appearing in the sky.", opts: ["is", "was", "were", "been"], ans: 1 },
+            { q: "True or False: Past Continuous = Subject + am/is/are + verb + ing", opts: ["True", "False"], ans: 1 },
+            { q: "Lightning __ flashing during the storm.", opts: ["flash", "was flashing", "flashes", "will flash"], ans: 1 },
+            { q: "The temperature __ rising quickly.", opts: ["am", "are", "was", "were"], ans: 2 },
+            { q: "Which uses Past Continuous?", opts: ["I eat lunch", "I was eating lunch", "I eat lunch now", "I will eat lunch"], ans: 1 },
+            { q: "The city __ looking smoggy that day.", opts: ["was", "is", "are", "been"], ans: 0 },
+            { q: "Complete: 'While it __ snowing, we __ playing'", opts: ["was, were", "were, was", "is, are", "am, is"], ans: 0 },
+            { q: "A dust storm __ moving across the desert.", opts: ["move", "moves", "was moving", "been moving"], ans: 2 },
+            { q: "What was happening during the heat wave?", opts: ["The temperature was dropping", "The temperature was rising", "The temperature was stable", "No change"], ans: 1 },
+            { q: "Hail __ falling heavily.", opts: ["was", "is", "are", "been"], ans: 0 },
+            { q: "True or False: 'They were talking while it was raining' uses two Past Continuous actions", opts: ["True", "False"], ans: 0 },
+            { q: "The roads __ becoming icy.", opts: ["was", "were", "is", "are"], ans: 1 },
+            { q: "I __ sleeping when it was storming.", opts: ["was", "is", "are", "been"], ans: 0 },
+            { q: "Which sentence shows interrupted action?", opts: ["The wind blew", "The wind was blowing when I arrived", "The wind blows", "The wind will blow"], ans: 1 },
+            { q: "She __ reading while it was cloudy.", opts: ["was", "is", "were", "are"], ans: 0 },
+            { q: "What does '-ing' form show in Past Continuous?", opts: ["Completed action", "Ongoing action", "Future action", "Habitual action"], ans: 1 },
+            { q: "The seasons __ changing gradually.", opts: ["was", "were", "is", "am"], ans: 1 },
+            { q: "It was freezing __ early in the morning.", opts: ["later", "always", "never"], ans: 2 },
+            { q: "They were measuring the temperature __.", opts: ["in Celsius", "in Kelvin", "in Rankine"], ans: 0 },
+            { q: "Complete: 'I was learning English __ it was raining'", opts: ["while", "when", "during"], ans: 0 },
+            { q: "True or False: 'The sky was getting foggy' is Past Continuous.", opts: ["True", "False"], ans: 0 },
+            { q: "The weather __ becoming dangerous.", opts: ["was", "is", "are", "were"], ans: 0 }
+        ];
+
+        let quizIndex = 0, quizScore = 0;
+
+        function startQuiz() {
+            quizIndex = 0;
+            quizScore = 0;
+            document.getElementById('quizResults').classList.add('hidden');
+            document.getElementById('quizContent').classList.remove('hidden');
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            const q = quizQuestions[quizIndex];
+            document.getElementById('qNum').textContent = quizIndex + 1;
+            document.getElementById('quizQuestion').textContent = q.q;
+            document.getElementById('quizProgress').style.width = `${((quizIndex + 1) / 25) * 100}%`;
+
+            const answersDiv = document.getElementById('quizAnswers');
+            answersDiv.innerHTML = '';
+            q.opts.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full p-4 text-left bg-slate-100 hover:bg-primary-50 rounded-xl quiz-option font-medium text-slate-700 border-2 border-transparent hover:border-primary-200';
+                btn.textContent = opt;
+                btn.onclick = () => selectAnswer(i, btn);
+                answersDiv.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(idx, btn) {
+            const buttons = document.querySelectorAll('.quiz-option');
+            buttons.forEach(b => b.disabled = true);
+
+            if (idx === quizQuestions[quizIndex].ans) {
+                btn.classList.add('correct');
+                quizScore++;
+            } else {
+                btn.classList.add('incorrect');
+                buttons[quizQuestions[quizIndex].ans].classList.add('correct');
+            }
+
+            setTimeout(() => {
+                quizIndex++;
+                if (quizIndex < 25) {
+                    loadQuizQuestion();
+                } else {
+                    endQuiz();
+                }
+            }, 1000);
+        }
+
+        function endQuiz() {
+            document.getElementById('quizContent').classList.add('hidden');
+            document.getElementById('quizResults').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = quizScore;
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+
+        // Games
+        function startGame(gameNum) {
+            if (gameNum === 1) initMatchingGame();
+            else if (gameNum === 2) initSentenceGame();
+            else if (gameNum === 3) initGuessGame();
+            else if (gameNum === 4) initFallingGame();
+        }
+
+        // Matching Game
+        const matchingPairs = [
+            { word: 'Sunny', def: 'Lots of sun, bright and warm' },
+            { word: 'Rainy', def: 'Lots of rain, wet weather' },
+            { word: 'Snowy', def: 'Covered with snow, very cold' },
+            { word: 'Windy', def: 'Strong wind, breezy' },
+            { word: 'Stormy', def: 'Strong winds, rain, lightning' },
+            { word: 'Hot', def: 'Very high temperature' },
+            { word: 'Cold', def: 'Very low temperature' },
+            { word: 'Foggy', def: 'Thick water vapor blocking view' }
+        ];
+
+        let matchScore = 0, matchFails = 0, matchedPairs = new Set(), selectedMatch = null;
+
+        function initMatchingGame() {
+            matchScore = 0;
+            matchFails = 0;
+            matchedPairs.clear();
+            selectedMatch = null;
+            showSection('matchingGame');
+            renderMatching();
+        }
+
+        function renderMatching() {
+            const shuffledDefs = [...matchingPairs].sort(() => Math.random() - 0.5);
+
+            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-8">';
+            html += '<div><h3 class="text-lg font-bold text-slate-600 mb-4 flex items-center gap-2"><span>📝</span> Words</h3><div class="space-y-3">';
+
+            matchingPairs.forEach((p, i) => {
+                const isMatched = matchedPairs.has(i);
+                html += `<button class="w-full p-4 rounded-xl match-item font-semibold text-lg ${isMatched ? 'matched' : 'bg-primary-500 text-white hover:bg-primary-600'}" 
+                    onclick="selectMatchItem('word', ${i})" ${isMatched ? 'disabled' : ''}>${p.word}</button>`;
+            });
+
+            html += '</div></div><div><h3 class="text-lg font-bold text-slate-600 mb-4 flex items-center gap-2"><span>📖</span> Definitions</h3><div class="space-y-3">';
+
+            shuffledDefs.forEach((p) => {
+                const originalIndex = matchingPairs.indexOf(p);
+                const isMatched = matchedPairs.has(originalIndex);
+                html += `<button class="w-full p-4 rounded-xl match-item text-left ${isMatched ? 'matched' : 'bg-green-500 text-white hover:bg-green-600'}" 
+                    onclick="selectMatchItem('def', ${originalIndex})" ${isMatched ? 'disabled' : ''}>${p.def}</button>`;
+            });
+
+            html += '</div></div></div>';
+            document.getElementById('matchingContent').innerHTML = html;
+            document.getElementById('matchScore').textContent = matchScore;
+            document.getElementById('matchFails').textContent = matchFails;
+        }
+
+        function selectMatchItem(type, idx) {
+            const allButtons = document.querySelectorAll('.match-item:not(.matched)');
+
+            if (!selectedMatch) {
+                selectedMatch = { type, idx };
+                allButtons.forEach(btn => {
+                    if (btn.textContent === (type === 'word' ? matchingPairs[idx].word : matchingPairs[idx].def)) {
+                        btn.classList.add('selected');
+                    }
+                });
+            } else if (selectedMatch.type !== type && selectedMatch.idx === idx) {
+                matchScore++;
+                matchedPairs.add(idx);
+                selectedMatch = null;
+
+                if (matchedPairs.size === matchingPairs.length) {
+                    setTimeout(() => {
+                        alert('🎉 Congratulations! You matched all pairs!');
+                        showSection('games');
+                    }, 300);
+                } else {
+                    renderMatching();
+                }
+            } else if (selectedMatch.type !== type) {
+                matchFails++;
+                allButtons.forEach(b => b.classList.remove('selected'));
+                selectedMatch = null;
+
+                if (matchFails >= 3) {
+                    setTimeout(() => {
+                        alert('Game Over! Try again.');
+                        initMatchingGame();
+                    }, 300);
+                } else {
+                    document.getElementById('matchFails').textContent = matchFails;
+                }
+            }
+        }
+
+        // Sentence Builder Game
+        const sentences = [
+            { words: ['It', 'raining', 'was', 'all', 'morning'], correct: 'It was raining all morning' },
+            { words: ['sun', 'The', 'shining', 'was', 'brightly'], correct: 'The sun was shining brightly' },
+            { words: ['wind', 'blowing', 'The', 'was', 'strongly'], correct: 'The wind was blowing strongly' },
+            { words: ['snowing', 'It', 'mountains', 'was', 'in', 'the'], correct: 'It was snowing in the mountains' },
+            { words: ['rainbow', 'appearing', 'A', 'sky', 'the', 'was', 'in'], correct: 'A rainbow was appearing in the sky' },
+            { words: ['storm', 'The', 'coming', 'was', 'quickly'], correct: 'The storm was coming quickly' },
+            { words: ['getting', 'sky', 'The', 'was', 'foggy'], correct: 'The sky was getting foggy' },
+            { words: ['flashing', 'Lightning', 'the', 'in', 'was', 'night'], correct: 'Lightning was flashing in the night' }
+        ];
+
+        let currentSentence = 0, sentScore = 0, sentFails = 0, selectedWords = [];
+
+        function initSentenceGame() {
+            currentSentence = 0;
+            sentScore = 0;
+            sentFails = 0;
+            selectedWords = [];
+            showSection('sentenceGame');
+            renderSentenceGame();
+        }
+
+        function renderSentenceGame() {
+            const sent = sentences[currentSentence];
+            const shuffled = [...sent.words].sort(() => Math.random() - 0.5);
+
+            let html = '<p class="text-lg mb-6 text-slate-600 font-medium">📝 Arrange the words to form a correct sentence:</p>';
+            html += '<div class="flex flex-wrap gap-3 mb-6" id="wordBank">';
+
+            shuffled.forEach((w, i) => {
+                const isSelected = selectedWords.some(sw => sw.word === w && sw.origIndex === i);
+                html += `<button class="px-5 py-3 bg-amber-400 hover:bg-amber-500 text-slate-800 font-bold rounded-xl sentence-word text-lg shadow-md ${isSelected ? 'selected' : ''}" 
+                    onclick="toggleSentenceWord(${i}, '${w}')">${w}</button>`;
+            });
+
+            html += '</div>';
+            html += '<div class="bg-gradient-to-r from-primary-50 to-accent-50 p-6 rounded-2xl mb-6 min-h-[80px] flex items-center">';
+            html += `<p class="text-xl font-semibold ${selectedWords.length ? 'text-slate-800' : 'text-slate-400'}">${selectedWords.map(sw => sw.word).join(' ') || 'Click words above to build your sentence...'}</p>`;
+            html += '</div>';
+            html += '<div class="flex gap-4">';
+            html += '<button class="flex-1 btn-success text-white px-6 py-4 rounded-xl font-bold text-lg" onclick="checkSentenceAnswer()">✓ Check Answer</button>';
+            html += '<button class="flex-1 btn-danger text-white px-6 py-4 rounded-xl font-bold text-lg" onclick="resetSentence()">↻ Reset</button>';
+            html += '</div>';
+
+            document.getElementById('sentenceContent').innerHTML = html;
+            document.getElementById('sentScore').textContent = sentScore;
+            document.getElementById('sentFails').textContent = sentFails;
+        }
+
+        function toggleSentenceWord(idx, word) {
+            const existing = selectedWords.findIndex(sw => sw.origIndex === idx);
+            if (existing >= 0) {
+                selectedWords.splice(existing, 1);
+            } else {
+                selectedWords.push({ word, origIndex: idx });
+            }
+            renderSentenceGame();
+        }
+
+        function checkSentenceAnswer() {
+            const sent = sentences[currentSentence];
+            const selected = selectedWords.map(sw => sw.word).join(' ');
+
+            if (selected === sent.correct) {
+                sentScore++;
+                currentSentence++;
+                selectedWords = [];
+                if (currentSentence >= sentences.length) {
+                    setTimeout(() => {
+                        alert('🎉 Perfect! All sentences correct!');
+                        showSection('games');
+                    }, 300);
+                } else {
+                    renderSentenceGame();
+                }
+            } else {
+                sentFails++;
+                selectedWords = [];
+                if (sentFails >= 3) {
+                    setTimeout(() => {
+                        alert('Game Over! Try again.');
+                        initSentenceGame();
+                    }, 300);
+                } else {
+                    renderSentenceGame();
+                }
+            }
+        }
+
+        function resetSentence() {
+            selectedWords = [];
+            renderSentenceGame();
+        }
+
+        // Guess Game
+        const guessWords = [
+            { def: 'Lots of sun, bright sky', word: 'Sunny' },
+            { def: 'Water falling from sky', word: 'Rainy' },
+            { def: 'Snow everywhere, very cold', word: 'Snowy' },
+            { def: 'Strong air movement', word: 'Windy' },
+            { def: 'Very high temperature', word: 'Hot' },
+            { def: 'Colored arc in sky after rain', word: 'Rainbow' },
+            { def: 'Dangerous weather with strong wind', word: 'Stormy' },
+            { def: 'Thick water vapor blocking view', word: 'Foggy' },
+            { def: 'Bright flash of electricity in sky', word: 'Lightning' },
+            { def: 'Moderately warm and comfortable', word: 'Warm' }
+        ];
+
+        let currentGuess = 0, guessScore = 0, guessFails = 0;
+
+        function initGuessGame() {
+            currentGuess = 0;
+            guessScore = 0;
+            guessFails = 0;
+            showSection('guessGame');
+            renderGuessGame();
+        }
+
+        function renderGuessGame() {
+            const g = guessWords[currentGuess];
+            const otherWords = guessWords.filter(x => x !== g).slice(0, 3).map(x => x.word);
+            const options = [g.word, ...otherWords].sort(() => Math.random() - 0.5);
+
+            let html = `<div class="bg-gradient-to-r from-primary-50 to-accent-50 p-6 rounded-2xl mb-6">
+                <p class="text-xl text-slate-800 font-semibold">"${g.def}"</p>
+            </div>`;
+            html += '<div class="space-y-3">';
+            options.forEach(o => {
+                html += `<button class="w-full p-4 bg-accent-100 hover:bg-accent-200 rounded-xl quiz-option font-medium text-slate-700 text-lg border-2 border-transparent hover:border-accent-300" 
+                    onclick="guessAnswer('${o}')">${o}</button>`;
+            });
+            html += '</div>';
+
+            document.getElementById('guessContent').innerHTML = html;
+            document.getElementById('guessScore').textContent = guessScore;
+            document.getElementById('guessFails').textContent = guessFails;
+        }
+
+        function guessAnswer(ans) {
+            if (ans === guessWords[currentGuess].word) {
+                guessScore++;
+                currentGuess++;
+                if (currentGuess >= guessWords.length) {
+                    setTimeout(() => {
+                        alert('🎉 Perfect! You got them all!');
+                        showSection('games');
+                    }, 300);
+                } else {
+                    renderGuessGame();
+                }
+            } else {
+                guessFails++;
+                if (guessFails >= 3) {
+                    setTimeout(() => {
+                        alert('Game Over! Try again.');
+                        initGuessGame();
+                    }, 300);
+                } else {
+                    document.getElementById('guessFails').textContent = guessFails;
+                }
+            }
+        }
+
+        // Falling Words Game
+        const fallingCorrectWords = ['sunny', 'rainy', 'snowy', 'windy', 'hot', 'cold', 'warm', 'foggy', 'stormy', 'rainbow', 'lightning', 'freezing', 'humid'];
+        const fallingWrongWords = ['computer', 'table', 'phone', 'book', 'car', 'house', 'tree', 'water', 'mountain', 'ocean'];
+
+        let fallScore = 0, fallFails = 0, fallingInterval;
+
+        function initFallingGame() {
+            fallScore = 0;
+            fallFails = 0;
+            document.getElementById('gameBoard').innerHTML = '';
+            document.getElementById('fallScore').textContent = fallScore;
+            document.getElementById('fallFails').textContent = fallFails;
+            showSection('fallingGame');
+            startFallingWords();
+        }
+
+        function startFallingWords() {
+            fallingInterval = setInterval(() => {
+                const isCorrect = Math.random() > 0.4;
+                const words = isCorrect ? fallingCorrectWords : fallingWrongWords;
+                const word = words[Math.floor(Math.random() * words.length)];
+
+                const div = document.createElement('div');
+                div.className = 'game-word text-base font-bold cursor-pointer rounded-xl px-4 py-2 text-white shadow-lg';
+                div.style.left = Math.random() * 85 + '%';
+                div.style.backgroundColor = isCorrect ? '#10b981' : '#ef4444';
+                div.textContent = word;
+                div.onclick = () => clickWord(isCorrect, div);
+                document.getElementById('gameBoard').appendChild(div);
+
+                setTimeout(() => {
+                    if (div.parentElement) {
+                        if (isCorrect) {
+                            fallFails++;
+                            document.getElementById('fallFails').textContent = fallFails;
+                            if (fallFails >= 5) {
+                                stopFallingGame();
+                                setTimeout(() => {
+                                    alert(`Game Over! Score: ${fallScore}`);
+                                    showSection('games');
+                                }, 100);
+                            }
+                        }
+                        div.remove();
+                    }
+                }, 4500);
+            }, 900);
+        }
+
+        function clickWord(isCorrect, el) {
+            const word = el.textContent;
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+
+            if (isCorrect) fallScore++;
+            else fallFails++;
+
+            document.getElementById('fallScore').textContent = fallScore;
+            document.getElementById('fallFails').textContent = fallFails;
+            el.remove();
+
+            if (fallFails >= 5) {
+                stopFallingGame();
+                alert(`Game Over! Score: ${fallScore}`);
+                showSection('games');
+            }
+        }
+
+        function stopFallingGame() {
+            clearInterval(fallingInterval);
+            document.getElementById('gameBoard').innerHTML = '';
+        }
+
+        // Section Navigation
+        function showSection(sectionId) {
+            if (sectionId !== 'fallingGame') {
+                stopFallingGame();
+            }
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            if (sectionId === 'vocabulary') updateVocab();
+            if (sectionId === 'quiz') startQuiz();
+            window.scrollTo(0, 0);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') showSection('home');
+        });
+    </script>
+</body>
+
+</html>
