@@ -1,347 +1,1584 @@
 <!doctype html>
-<html lang="en" class="h-full">
-
+<html lang="es" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>EcoLingo | English Environment & Weather</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plataforma interactiva para aprender inglés: vocabulario, gramática, quizzes y juegos sobre medio ambiente y clima">
+    <meta name="theme-color" content="#667eea">
+    <title>🌍 English Learning - Environment & Weather</title>
+    
+    <!-- Preconnect para rendimiento -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    
+    <!-- Lucide Icons -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-    <!-- SDKs externos (no interferirán) -->
-    <script src="/_sdk/element_sdk.js"></script>
-    <script src="/_sdk/data_sdk.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Configuración Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'system-ui', 'sans-serif']
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#667eea',
+                            600: '#5568d3',
+                            700: '#764ba2',
+                            800: '#6b46c1',
+                            900: '#553c9a'
+                        },
+                        success: '#10b981',
+                        error: '#ef4444',
+                        warning: '#f59e0b'
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.4s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-in',
+                        'bounce-slow': 'bounce 2.5s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-soft': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { opacity: '0', transform: 'translateY(1rem)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-0.5rem)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Estilos personalizados -->
     <style>
-        * {
+        /* ===== VARIABLES CSS ===== */
+        :root {
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms ease;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+        }
+
+        /* ===== BASE ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(145deg, #0f172a 0%, #1e1b4b 100%);
-            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== ACCESIBILIDAD ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Focus visible para navegación por teclado */
+        :focus-visible {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        /* Skip link para accesibilidad */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            z-index: 1000;
+            transition: top var(--transition-fast);
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* ===== COMPONENTES ===== */
+        .card {
+            background: white;
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-xl);
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+            will-change: transform;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .card:active {
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            user-select: none;
+            will-change: transform;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-success { background: #10b981; color: white; }
+        .btn-error { background: #ef4444; color: white; }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 9999px;
             overflow: hidden;
         }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 9999px;
+            transition: width 0.3s ease;
+        }
 
-        /* animaciones mejoradas */
-        @keyframes fadeSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            pointer-events: auto;
+            background: white;
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease;
+            max-width: 320px;
+            border-left: 4px solid #667eea;
+        }
+        .toast.success { border-left-color: #10b981; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.warning { border-left-color: #f59e0b; }
+
+        /* Game Elements */
+        .game-word {
+            position: absolute;
+            animation: fall 5s linear forwards;
+            cursor: pointer;
+            user-select: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            color: white;
+            transition: transform 0.1s;
+        }
+        .game-word:hover { transform: scale(1.05); }
+        .game-word:active { transform: scale(0.95); }
+        
+        @keyframes fall {
             to {
-                opacity: 1;
-                transform: translateY(0);
+                transform: translateY(calc(100vh + 100px));
+                opacity: 0;
             }
         }
 
-        @keyframes gentlePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+        /* Matching Game */
+        .match-item {
+            transition: all var(--transition-fast);
+            cursor: pointer;
         }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-8px); }
+        .match-item:hover { transform: translateY(-2px); }
+        .match-item.selected {
+            background: #667eea !important;
+            color: white;
+            transform: scale(1.02);
+            box-shadow: var(--shadow-lg);
         }
-
+        .match-item.matched {
+            background: #374151 !important;
+            color: white;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .match-item.wrong {
+            animation: shake 0.3s;
+            background: #fecaca !important;
+        }
         @keyframes shake {
-            0%,100%{ transform: translateX(0); }
-            25%{ transform: translateX(-6px); }
-            75%{ transform: translateX(6px); }
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
         }
 
-        @keyframes fallWord {
-            0% { top: -50px; opacity: 1; transform: rotate(0deg);}
-            100% { top: 100%; opacity: 0; transform: rotate(10deg);}
-        }
-
-        .card-modern {
-            background: rgba(255,255,255,0.97);
-            backdrop-filter: blur(2px);
-            border-radius: 2rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.25);
-        }
-
-        .btn-modern {
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-        .btn-modern:active {
-            transform: scale(0.97);
-        }
-
-        .section {
-            display: none;
-            animation: fadeSlideUp 0.45s ease-out;
-        }
+        /* Secciones */
+        .section { display: none; }
         .section.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
 
-        .glass-header {
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-        }
-
-        /* juego matching */
-        .match-card {
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .match-card.selected {
-            background: #8b5cf6 !important;
-            color: white !important;
-            transform: scale(1.01);
-            box-shadow: 0 8px 20px rgba(139,92,246,0.4);
-        }
-        .match-card.matched {
-            background: #9ca3af !important;
-            cursor: default;
-            opacity: 0.6;
-            transform: none;
-            pointer-events: none;
-            text-decoration: line-through;
-        }
-
-        .quiz-option {
-            transition: all 0.15s;
-            cursor: pointer;
-        }
-        .quiz-option.correct-highlight {
-            background: #10b981 !important;
-            color: white;
-        }
-        .quiz-option.wrong-highlight {
-            background: #ef4444 !important;
-            color: white;
-        }
-
-        .game-board-fall {
-            position: relative;
-            height: 380px;
-            background: linear-gradient(145deg, #d9eafb 0%, #bbdef5 100%);
-            border-radius: 28px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .falling-item {
+        /* ===== UTILIDADES ===== */
+        .hidden { display: none !important; }
+        .sr-only {
             position: absolute;
-            padding: 0.5rem 1rem;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1rem;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-            animation: fallWord linear forwards;
-            z-index: 20;
-            backdrop-filter: blur(2px);
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
             white-space: nowrap;
+            border: 0;
+        }
+        .text-balance { text-wrap: balance; }
+        
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: var(--radius-md);
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
-        .progress-fill {
-            transition: width 0.35s ease;
-            background: linear-gradient(90deg, #8b5cf6, #c084fc);
-        }
-
-        /* scroll suave */
-        .overflow-auto {
-            scrollbar-width: thin;
+        /* Dark mode */
+        @media (prefers-color-scheme: dark) {
+            .card { background: #1e293b; }
+            body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
         }
     </style>
+    
+    <!-- SDKs del sistema -->
+    <script src="/_sdk/element_sdk.js"></script>
+    <script src="/_sdk/data_sdk.js"></script>
 </head>
 
-<body class="h-full flex flex-col">
-    <div id="app" class="flex flex-col h-full w-full">
-        <!-- HEADER MODERNO -->
-        <header class="glass-header px-6 py-4 flex flex-wrap justify-between items-center gap-3 sticky top-0 z-30 shadow-sm">
-            <div>
-                <h1 id="schoolName" class="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-indigo-700 to-purple-800 bg-clip-text text-transparent">EcoLingo</h1>
-                <p class="text-xs text-gray-500">Environment & Weather English</p>
-            </div>
-            <div class="text-right text-xs md:text-sm text-gray-700">
-                <div><span id="currentDate" class="font-medium"></span></div>
-                <div><span id="teacherInfo" class="font-semibold">👩‍🏫 Wilfran Decena</span> | <span id="monthValue">🌱 Compañerismo</span></div>
+<body class="h-full overflow-hidden flex flex-col bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900">
+    
+    <!-- Skip Link para accesibilidad -->
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="app" class="h-full w-full flex flex-col">
+        
+        <!-- ===== HEADER ===== -->
+        <header class="header px-4 md:px-6 py-3 md:py-4 sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-md" role="banner">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex items-center justify-between mb-2">
+                    <h1 id="schoolName" class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
+                        English Class
+                    </h1>
+                    <time id="currentDate" class="text-xs md:text-sm text-gray-600" datetime=""></time>
+                </div>
+                
+                <nav aria-label="Información de la clase" class="text-xs md:text-sm text-gray-600">
+                    <ul class="flex flex-wrap justify-center gap-3 md:gap-6">
+                        <li>
+                            <span id="teacherInfo" class="flex items-center gap-1">
+                                <span aria-hidden="true">👨‍🏫</span>
+                                <strong>Docente:</strong> Wilfran Luis Decena
+                            </span>
+                        </li>
+                        <li>
+                            <span id="monthValue" class="flex items-center gap-1">
+                                <span aria-hidden="true">📅</span>
+                                <strong>Valor del mes:</strong> Compañerismo y Participación
+                            </span>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </header>
 
-        <main class="flex-1 overflow-auto p-5 md:p-8">
-            <div class="max-w-6xl mx-auto">
-                <!-- HOME -->
-                <section id="home" class="section active">
-                    <div class="text-center mb-10">
-                        <div class="text-7xl mb-3">🌦️📚</div>
-                        <h2 class="text-4xl md:text-5xl font-black text-white drop-shadow-md">Weather & Nature</h2>
-                        <p class="text-indigo-100 text-lg mt-2">Aprende inglés jugando · Past Continuous · Vocabulario interactivo</p>
+        <!-- ===== MAIN CONTENT ===== -->
+        <main id="main-content" class="flex-1 overflow-y-auto" role="main">
+            <div class="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
+                
+                <!-- HOME SECTION -->
+                <section id="home" class="section active" aria-labelledby="home-title">
+                    <div class="text-center mb-10 md:mb-14">
+                        <h2 id="home-title" class="text-3xl md:text-5xl font-bold text-white mb-3 md:mb-4">
+                            🌍 Environment & Weather
+                        </h2>
+                        <p class="text-lg md:text-xl text-white/90 text-balance">
+                            Learn English through interactive activities
+                        </p>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div onclick="showSection('vocabulary')" class="card-modern bg-white p-6 text-center cursor-pointer hover:scale-[1.02] transition-transform duration-200 shadow-xl">
-                            <div class="text-5xl mb-3">📖</div>
-                            <h3 class="text-2xl font-bold text-gray-800">Vocabulario</h3>
-                            <p class="text-gray-500 text-sm">+25 palabras con audio</p>
-                        </div>
-                        <div onclick="showSection('grammar')" class="card-modern bg-white p-6 text-center cursor-pointer hover:scale-[1.02]">
-                            <div class="text-5xl mb-3">✍️</div>
-                            <h3 class="text-2xl font-bold text-gray-800">Gramática</h3>
-                            <p class="text-gray-500 text-sm">Past Continuous explicado</p>
-                        </div>
-                        <div onclick="showSection('quiz')" class="card-modern bg-white p-6 text-center cursor-pointer hover:scale-[1.02]">
-                            <div class="text-5xl mb-3">❓</div>
-                            <h3 class="text-2xl font-bold text-gray-800">Quiz</h3>
-                            <p class="text-gray-500 text-sm">25 preguntas desafiantes</p>
-                        </div>
-                        <div onclick="showSection('games')" class="card-modern bg-white p-6 text-center cursor-pointer hover:scale-[1.02]">
-                            <div class="text-5xl mb-3">🎮</div>
-                            <h3 class="text-2xl font-bold text-gray-800">Juegos</h3>
-                            <p class="text-gray-500 text-sm">4 minijuegos interactivos</p>
-                        </div>
+                    
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" role="navigation" aria-label="Menú de actividades">
+                        
+                        <!-- Vocabulary Card -->
+                        <article class="card p-6 md:p-8 cursor-pointer" 
+                                 onclick="App.navigate('vocabulary')"
+                                 role="button"
+                                 tabindex="0"
+                                 onkeydown="App.handleCardKey(event, 'vocabulary')"
+                                 aria-label="Sección de vocabulario: Aprende palabras del clima con audio y traducciones">
+                            <div class="text-4xl md:text-5xl mb-4" aria-hidden="true">📚</div>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Vocabulary</h3>
+                            <p class="text-gray-600 text-sm md:text-base">Learn weather words with audio and translations</p>
+                        </article>
+
+                        <!-- Grammar Card -->
+                        <article class="card p-6 md:p-8 cursor-pointer"
+                                 onclick="App.navigate('grammar')"
+                                 role="button"
+                                 tabindex="0"
+                                 onkeydown="App.handleCardKey(event, 'grammar')"
+                                 aria-label="Sección de gramática: Domina el Past Continuous con ejemplos">
+                            <div class="text-4xl md:text-5xl mb-4" aria-hidden="true">✏️</div>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Grammar</h3>
+                            <p class="text-gray-600 text-sm md:text-base">Master Past Continuous with examples</p>
+                        </article>
+
+                        <!-- Quiz Card -->
+                        <article class="card p-6 md:p-8 cursor-pointer"
+                                 onclick="App.navigate('quiz')"
+                                 role="button"
+                                 tabindex="0"
+                                 onkeydown="App.handleCardKey(event, 'quiz')"
+                                 aria-label="Sección de examen: Pon a prueba tus conocimientos con 25 preguntas">
+                            <div class="text-4xl md:text-5xl mb-4" aria-hidden="true">❓</div>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Quiz</h3>
+                            <p class="text-gray-600 text-sm md:text-base">Test your knowledge with 25 questions</p>
+                        </article>
+
+                        <!-- Games Card -->
+                        <article class="card p-6 md:p-8 cursor-pointer sm:col-span-2 lg:col-span-1"
+                                 onclick="App.navigate('games')"
+                                 role="button"
+                                 tabindex="0"
+                                 onkeydown="App.handleCardKey(event, 'games')"
+                                 aria-label="Sección de juegos: 4 juegos interactivos para practicar">
+                            <div class="text-4xl md:text-5xl mb-4" aria-hidden="true">🎮</div>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Learning Games</h3>
+                            <p class="text-gray-600 text-sm md:text-base">4 interactive games to practice</p>
+                        </article>
                     </div>
-                    <div class="mt-10 text-center text-white/80 text-sm italic">✨ Aprende jugando · Mejora tu inglés con clima y medioambiente ✨</div>
                 </section>
 
-                <!-- VOCABULARIO (mejorado) -->
-                <section id="vocabulary" class="section">
+                <!-- VOCABULARY SECTION -->
+                <section id="vocabulary" class="section" aria-labelledby="vocab-title">
                     <div class="max-w-2xl mx-auto">
-                        <div class="card-modern bg-white p-8 text-center">
-                            <div class="text-7xl mb-4 animate-bounce" id="vocabEmoji">☀️</div>
-                            <h2 id="vocabWord" class="text-4xl font-extrabold text-gray-800 cursor-pointer hover:text-purple-600 transition" onclick="speakWord()">Sunny 🔊</h2>
-                            <p id="vocabTranslation" class="text-2xl text-gray-500 mt-2">Soleado</p>
-                            <div class="bg-indigo-50 p-4 rounded-2xl mt-6 italic text-gray-700" id="vocabExample">"The sun was shining brightly."</div>
-                            <div class="flex gap-4 justify-center mt-8">
-                                <button onclick="prevVocab()" class="bg-gray-300 hover:bg-gray-400 px-6 py-2 rounded-full font-bold transition">◀ Anterior</button>
-                                <button onclick="nextVocab()" class="bg-purple-600 text-white px-6 py-2 rounded-full font-bold hover:bg-purple-700 transition">Siguiente ▶</button>
-                                <button onclick="showSection('home')" class="bg-gray-500 text-white px-5 py-2 rounded-full">Inicio</button>
+                        <article class="card p-6 md:p-8 min-h-[400px] flex flex-col justify-between">
+                            <div class="text-center">
+                                <div id="vocabEmoji" class="text-6xl md:text-7xl mb-4 animate-bounce-slow" aria-hidden="true">🌤️</div>
+                                <h3 id="vocabWord" 
+                                    class="text-2xl md:text-3xl font-bold text-gray-800 mt-4 mb-2 cursor-pointer hover:text-primary-600 transition-colors"
+                                    onclick="Vocabulary.speak()"
+                                    role="button"
+                                    tabindex="0"
+                                    onkeydown="if(event.key==='Enter'||event.key===' ')Vocabulary.speak()"
+                                    aria-label="Escuchar pronunciación">
+                                    Sunny <span aria-hidden="true">🔊</span>
+                                </h3>
+                                <p id="vocabTranslation" class="text-xl text-gray-600 mb-2">Soleado</p>
+                                <p id="vocabExample" class="text-lg text-primary-700 italic font-medium">"The sun was shining brightly."</p>
                             </div>
-                            <div class="progress-bar mt-6 bg-gray-200 rounded-full h-2 overflow-hidden"><div id="vocabProgress" class="progress-fill h-full w-0"></div></div>
-                            <p class="text-sm text-gray-500 mt-2" id="vocabCounter">1 / 25</p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+                                <button class="btn btn-primary" onclick="Vocabulary.next()" aria-label="Siguiente palabra">
+                                    Next <span aria-hidden="true">→</span>
+                                </button>
+                                <button class="btn btn-secondary" onclick="App.navigate('home')" aria-label="Volver al inicio">
+                                    Back
+                                </button>
+                            </div>
+                        </article>
+                        
+                        <div class="mt-6">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="25">
+                                <div id="vocabProgress" class="progress-fill" style="width: 4%"></div>
+                            </div>
+                            <p id="vocabCounter" class="text-center text-white/90 text-sm mt-2">1 / 25</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- GRAMMAR (mejor visual) -->
-                <section id="grammar" class="section">
+                <!-- GRAMMAR SECTION -->
+                <section id="grammar" class="section" aria-labelledby="grammar-title">
                     <div class="max-w-3xl mx-auto">
-                        <div class="card-modern bg-white p-8 space-y-6">
-                            <h2 class="text-3xl font-black text-indigo-800">⏳ Past Continuous</h2>
-                            <div class="bg-blue-50 p-5 rounded-xl border-l-8 border-blue-500">
-                                <p class="text-lg">Se usa para acciones <strong>en progreso</strong> en el pasado. <br> <span class="font-mono">was/were + verbo-ing</span></p>
-                                <p class="mt-2">✨ Ej: <em>"While I was studying, the storm began."</em></p>
+                        <article class="card p-6 md:p-8">
+                            <h2 id="grammar-title" class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Past Continuous Tense</h2>
+                            
+                            <div class="bg-blue-50 p-5 md:p-6 rounded-xl mb-5 border-l-4 border-blue-500">
+                                <h3 class="text-lg md:text-xl font-bold text-blue-700 mb-2">📚 What is Past Continuous?</h3>
+                                <p class="text-gray-800 leading-relaxed">
+                                    The Past Continuous tense describes an action that was happening at a specific time in the past. 
+                                    It shows an ongoing or continuous action that was interrupted or happening while something else took place.
+                                </p>
+                                <p class="text-gray-800 mt-3"><strong>Example:</strong> "I was studying when the phone rang"</p>
                             </div>
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div class="bg-purple-50 p-4 rounded-xl"><span class="font-bold">🌧️</span> It <u>was raining</u> all night.</div>
-                                <div class="bg-purple-50 p-4 rounded-xl"><span class="font-bold">💨</span> The wind <u>was blowing</u> strongly.</div>
-                                <div class="bg-purple-50 p-4 rounded-xl"><span class="font-bold">⚡</span> Lightning <u>was flashing</u> in the sky.</div>
-                                <div class="bg-purple-50 p-4 rounded-xl"><span class="font-bold">🌈</span> A rainbow <u>was appearing</u> after rain.</div>
+                            
+                            <div class="bg-primary-50 p-5 md:p-6 rounded-xl mb-5">
+                                <h3 class="text-lg md:text-xl font-bold text-primary-700 mb-2">📖 Structure:</h3>
+                                <code class="block bg-white p-3 rounded-lg text-gray-800 font-mono text-sm md:text-base">
+                                    Subject + was/were + Verb + -ing
+                                </code>
                             </div>
-                            <button onclick="showSection('home')" class="w-full bg-gray-200 hover:bg-gray-300 py-3 rounded-xl font-bold">Volver al inicio</button>
-                        </div>
+                            
+                            <div class="bg-green-50 p-5 md:p-6 rounded-xl mb-5">
+                                <h3 class="text-lg md:text-xl font-bold text-green-700 mb-3">✅ Examples:</h3>
+                                <ul class="space-y-2 text-gray-800">
+                                    <li>• <strong>It was raining</strong> all morning.</li>
+                                    <li>• <strong>The sun was shining</strong> brightly.</li>
+                                    <li>• <strong>They were playing</strong> while the wind <strong>was blowing</strong>.</li>
+                                    <li>• <strong>She was studying</strong> while <strong>it was snowing</strong>.</li>
+                                </ul>
+                            </div>
+                            
+                            <button class="btn btn-secondary w-full" onclick="App.navigate('home')">
+                                ← Back to Home
+                            </button>
+                        </article>
                     </div>
                 </section>
 
-                <!-- QUIZ mejorado: feedback visual -->
-                <section id="quiz" class="section">
-                    <div class="max-w-2xl mx-auto">
-                        <div class="card-modern bg-white p-8">
-                            <div class="flex justify-between"><h2 class="text-2xl font-black">📝 Quiz</h2><span id="qNum" class="font-bold">1/25</span></div>
-                            <div class="progress-bar bg-gray-200 h-2 rounded-full mt-2"><div id="quizProgress" class="progress-fill h-full w-0 rounded-full"></div></div>
+                <!-- QUIZ SECTION -->
+                <section id="quiz" class="section" aria-labelledby="quiz-title">
+                    <div class="max-w-3xl mx-auto">
+                        <article class="card p-6 md:p-8">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                                <h2 id="quiz-title" class="text-2xl md:text-3xl font-bold text-gray-800">Quiz Time! ❓</h2>
+                                <div class="text-right w-full sm:w-auto">
+                                    <p class="text-sm text-gray-600">
+                                        Question <span id="qNum">1</span>/<span id="qTotal">25</span>
+                                    </p>
+                                    <div class="progress-bar mt-2">
+                                        <div id="quizProgress" class="progress-fill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div id="quizContent">
-                                <p class="text-xl font-semibold my-6" id="quizQuestion"></p>
-                                <div id="quizAnswers" class="space-y-3"></div>
+                                <p id="quizQuestion" class="text-lg md:text-xl text-gray-800 font-semibold mb-5"></p>
+                                <div id="quizAnswers" class="space-y-3" role="radiogroup"></div>
                             </div>
-                            <div id="quizResults" class="hidden text-center py-4">
-                                <div class="text-5xl mb-2">🏆</div>
-                                <p class="text-3xl font-black">¡Completado!</p>
-                                <p class="text-2xl">Puntaje: <span id="finalScore" class="text-green-600">0</span>/25</p>
-                                <button onclick="restartQuiz()" class="bg-purple-600 text-white px-6 py-2 rounded-full mt-4">Reintentar</button>
-                                <button onclick="showSection('home')" class="bg-gray-500 text-white px-6 py-2 rounded-full mt-4 ml-2">Inicio</button>
+                            
+                            <div id="quizResults" class="hidden text-center">
+                                <h3 class="text-2xl md:text-3xl font-bold text-primary-700 mb-3">Quiz Complete! 🎉</h3>
+                                <p class="text-xl md:text-2xl text-gray-800 mb-5">
+                                    Score: <span id="finalScore" class="text-success font-bold">0</span>/25
+                                </p>
+                                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                                    <button class="btn btn-primary" onclick="Quiz.restart()">Restart Quiz</button>
+                                    <button class="btn btn-secondary" onclick="App.navigate('home')">Back to Home</button>
+                                </div>
                             </div>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- GAMES SECTION -->
+                <section id="games" class="section" aria-labelledby="games-title">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 id="games-title" class="text-2xl md:text-3xl font-bold text-white text-center mb-6 md:mb-8">
+                            🎮 Learning Games
+                        </h2>
+                        
+                        <div class="grid sm:grid-cols-2 gap-4 md:gap-6">
+                            <article class="card p-5 md:p-6 cursor-pointer" onclick="Games.start('matching')" role="button" tabindex="0">
+                                <div class="text-3xl md:text-4xl mb-2" aria-hidden="true">🎯</div>
+                                <h3 class="text-lg md:text-xl font-bold text-gray-800">1. Matching Game</h3>
+                                <p class="text-gray-600 text-sm mt-1">Match words with their definitions</p>
+                            </article>
+                            
+                            <article class="card p-5 md:p-6 cursor-pointer" onclick="Games.start('sentence')" role="button" tabindex="0">
+                                <div class="text-3xl md:text-4xl mb-2" aria-hidden="true">🧩</div>
+                                <h3 class="text-lg md:text-xl font-bold text-gray-800">2. Sentence Builder</h3>
+                                <p class="text-gray-600 text-sm mt-1">Order the words to make sentences</p>
+                            </article>
+                            
+                            <article class="card p-5 md:p-6 cursor-pointer" onclick="Games.start('guess')" role="button" tabindex="0">
+                                <div class="text-3xl md:text-4xl mb-2" aria-hidden="true">🤔</div>
+                                <h3 class="text-lg md:text-xl font-bold text-gray-800">3. Guess the Word</h3>
+                                <p class="text-gray-600 text-sm mt-1">Guess the word from the definition</p>
+                            </article>
+                            
+                            <article class="card p-5 md:p-6 cursor-pointer" onclick="Games.start('falling')" role="button" tabindex="0">
+                                <div class="text-3xl md:text-4xl mb-2" aria-hidden="true">⬇️</div>
+                                <h3 class="text-lg md:text-xl font-bold text-gray-800">4. Falling Words</h3>
+                                <p class="text-gray-600 text-sm mt-1">Catch correct words, avoid wrong ones</p>
+                            </article>
                         </div>
+                        
+                        <button class="btn btn-secondary w-full mt-6" onclick="App.navigate('home')">
+                            ← Back to Home
+                        </button>
                     </div>
                 </section>
 
-                <!-- JUEGOS MENÚ mejorado -->
-                <section id="games" class="section">
-                    <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                        <div onclick="initMatchingGame()" class="card-modern bg-white p-6 cursor-pointer hover:scale-[1.02] transition"><div class="text-5xl">🎯</div><h3 class="font-bold text-xl">Matching Game</h3><p>Empareja palabra y definición</p></div>
-                        <div onclick="initSentenceGame()" class="card-modern bg-white p-6 cursor-pointer hover:scale-[1.02] transition"><div class="text-5xl">🧩</div><h3 class="font-bold text-xl">Sentence Builder</h3><p>Ordena oraciones</p></div>
-                        <div onclick="initGuessGame()" class="card-modern bg-white p-6 cursor-pointer hover:scale-[1.02] transition"><div class="text-5xl">🤔</div><h3 class="font-bold text-xl">Guess the Word</h3><p>Adivina por definición</p></div>
-                        <div onclick="initFallingGame()" class="card-modern bg-white p-6 cursor-pointer hover:scale-[1.02] transition"><div class="text-5xl">🌧️</div><h3 class="font-bold text-xl">Falling Words</h3><p>Atrapa las palabras correctas</p></div>
-                        <button onclick="showSection('home')" class="col-span-2 bg-gray-600 text-white py-3 rounded-xl">Volver al menú principal</button>
+                <!-- GAME: MATCHING -->
+                <section id="matchingGame" class="section" aria-labelledby="matching-title">
+                    <div class="max-w-3xl mx-auto">
+                        <article class="card p-6 md:p-8">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                                <h2 id="matching-title" class="text-xl md:text-2xl font-bold text-gray-800">Matching Game 🎯</h2>
+                                <div class="flex gap-4 text-sm">
+                                    <span class="flex items-center gap-1 text-warning">⭐ <strong id="matchScore">0</strong></span>
+                                    <span class="flex items-center gap-1 text-error">❌ <strong id="matchFails">0</strong>/3</span>
+                                </div>
+                            </div>
+                            <div id="matchingContent" class="grid md:grid-cols-2 gap-6"></div>
+                            <button class="btn btn-secondary w-full mt-6" onclick="App.navigate('games')">
+                                ← Back to Games
+                            </button>
+                        </article>
                     </div>
                 </section>
 
-                <!-- Subsecciones de juegos (matching, sentence, guess, falling) con estilo mejorado -->
-                <section id="matchingGame" class="section"><div class="card-modern bg-white p-6 max-w-3xl mx-auto"><div class="flex justify-between"><h2 class="text-2xl font-bold">🔗 Matching Game</h2><div>⭐ <span id="matchScore">0</span> &nbsp; ❌ <span id="matchFails">0</span>/3</div></div><div id="matchingContent" class="my-6"></div><button onclick="showSection('games')" class="bg-gray-500 text-white px-5 py-2 rounded-full">Salir</button></div></section>
-                <section id="sentenceGame" class="section"><div class="card-modern bg-white p-6 max-w-3xl mx-auto"><div class="flex justify-between"><h2 class="text-2xl font-bold">📝 Sentence Builder</h2><div>⭐ <span id="sentScore">0</span> ❌ <span id="sentFails">0</span>/3</div></div><div id="sentenceContent" class="my-5"></div><button onclick="showSection('games')" class="bg-gray-500 text-white px-5 py-2 rounded-full">Salir</button></div></section>
-                <section id="guessGame" class="section"><div class="card-modern bg-white p-6 max-w-3xl mx-auto"><div class="flex justify-between"><h2 class="text-2xl font-bold">💡 Guess the Word</h2><div>⭐ <span id="guessScore">0</span> ❌ <span id="guessFails">0</span>/3</div></div><div id="guessContent" class="my-6"></div><button onclick="showSection('games')" class="bg-gray-500 text-white px-5 py-2 rounded-full">Salir</button></div></section>
-                <section id="fallingGame" class="section"><div class="card-modern bg-white p-6 max-w-4xl mx-auto"><div class="flex justify-between"><h2 class="text-2xl font-bold">☁️ Falling Words</h2><div>⭐ <span id="fallScore">0</span> ❌ <span id="fallFails">0</span>/5</div></div><div id="gameBoard" class="game-board-fall mt-4"></div><button onclick="stopFallingAndExit()" class="mt-5 bg-gray-500 text-white px-5 py-2 rounded-full">Salir</button></div></section>
+                <!-- GAME: SENTENCE BUILDER -->
+                <section id="sentenceGame" class="section" aria-labelledby="sentence-title">
+                    <div class="max-w-3xl mx-auto">
+                        <article class="card p-6 md:p-8">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                                <h2 id="sentence-title" class="text-xl md:text-2xl font-bold text-gray-800">Sentence Builder 🧩</h2>
+                                <div class="flex gap-4 text-sm">
+                                    <span class="flex items-center gap-1 text-warning">⭐ <strong id="sentScore">0</strong></span>
+                                    <span class="flex items-center gap-1 text-error">❌ <strong id="sentFails">0</strong>/3</span>
+                                </div>
+                            </div>
+                            <div id="sentenceContent"></div>
+                            <button class="btn btn-secondary w-full mt-6" onclick="App.navigate('games')">
+                                ← Back to Games
+                            </button>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- GAME: GUESS WORD -->
+                <section id="guessGame" class="section" aria-labelledby="guess-title">
+                    <div class="max-w-3xl mx-auto">
+                        <article class="card p-6 md:p-8">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                                <h2 id="guess-title" class="text-xl md:text-2xl font-bold text-gray-800">Guess the Word 🤔</h2>
+                                <div class="flex gap-4 text-sm">
+                                    <span class="flex items-center gap-1 text-warning">⭐ <strong id="guessScore">0</strong></span>
+                                    <span class="flex items-center gap-1 text-error">❌ <strong id="guessFails">0</strong>/3</span>
+                                </div>
+                            </div>
+                            <div id="guessContent"></div>
+                            <button class="btn btn-secondary w-full mt-6" onclick="App.navigate('games')">
+                                ← Back to Games
+                            </button>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- GAME: FALLING WORDS -->
+                <section id="fallingGame" class="section" aria-labelledby="falling-title">
+                    <div class="max-w-4xl mx-auto">
+                        <article class="card p-6 md:p-8">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                                <h2 id="falling-title" class="text-xl md:text-2xl font-bold text-gray-800">Falling Words ⬇️</h2>
+                                <div class="flex gap-4 text-sm">
+                                    <span class="flex items-center gap-1 text-warning">⭐ <strong id="fallScore">0</strong></span>
+                                    <span class="flex items-center gap-1 text-error">❌ <strong id="fallFails">0</strong>/5</span>
+                                </div>
+                            </div>
+                            <div id="gameBoard" class="game-board relative h-80 md:h-96 rounded-xl overflow-hidden bg-gradient-to-b from-sky-100 to-blue-200" role="application" aria-label="Juego de palabras cayendo"></div>
+                            <button class="btn btn-secondary w-full mt-6" onclick="Games.stop('falling'); App.navigate('games')">
+                                ← Back to Games
+                            </button>
+                        </article>
+                    </div>
+                </section>
+
             </div>
         </main>
-        <footer class="text-center text-white/70 text-xs py-3 border-t border-white/20">🌱 Aprender inglés · Clima y medio ambiente · Prof. Wilfran Decena</footer>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="bg-white/95 backdrop-blur px-4 md:px-6 py-3 mt-auto border-t border-gray-200" role="contentinfo">
+            <div class="max-w-7xl mx-auto overflow-hidden">
+                <div class="animate-[slideLeft_25s_linear_infinite] whitespace-nowrap text-xs md:text-sm text-gray-700">
+                    <span class="inline-block mx-6 md:mx-8">
+                        👨‍🏫 <strong>Teacher:</strong> Wilfran Luis Decena &nbsp;|&nbsp;
+                        📅 <strong>Valor del mes:</strong> Compañerismo y Participación &nbsp;|&nbsp;
+                        📚 <strong>Lema:</strong> Learn Together | Grow Together &nbsp;|&nbsp;
+                        ✨ <strong>Reglas:</strong> Ser respetuoso, levantar la mano, hacer silencio
+                    </span>
+                </div>
+            </div>
+        </footer>
     </div>
 
+    <!-- ===== JAVASCRIPT MODULAR ===== -->
     <script>
-        lucide.createIcons();
-        // Configuración maestro
-        const vocabulary = [
-            {word:"Sunny",emoji:"☀️",trans:"Soleado",ex:"The sun was shining brightly."},{word:"Rainy",emoji:"🌧️",trans:"Lluvioso",ex:"It was raining all morning."},{word:"Cloudy",emoji:"☁️",trans:"Nublado",ex:"It was getting cloudy."},{word:"Snowy",emoji:"❄️",trans:"Nevado",ex:"It was snowing."},{word:"Rainbow",emoji:"🌈",trans:"Arcoíris",ex:"A rainbow was appearing."},{word:"Windy",emoji:"💨",trans:"Ventoso",ex:"The wind was blowing."},{word:"Stormy",emoji:"⛈️",trans:"Tormentoso",ex:"The storm was coming."},{word:"Foggy",emoji:"🌫️",trans:"Brumoso",ex:"The sky was foggy."},{word:"Lightning",emoji:"⚡",trans:"Rayo",ex:"Lightning was flashing."},{word:"Hot",emoji:"🔥",trans:"Caliente",ex:"It was getting hot."},{word:"Cold",emoji:"❄️",trans:"Frío",ex:"It was freezing cold."},{word:"Warm",emoji:"🌤️",trans:"Templado",ex:"The weather was warm."},{word:"Freezing",emoji:"🥶",trans:"Congelado",ex:"It was freezing early."},{word:"Humid",emoji:"💧",trans:"Húmedo",ex:"The air was humid."},{word:"Hurricane",emoji:"🌀",trans:"Huracán",ex:"A hurricane was forming."},{word:"Hail",emoji:"🧊",trans:"Granizo",ex:"Hail was falling."},{word:"Blizzard",emoji:"❄️",trans:"Ventisca",ex:"A blizzard was hitting."},{word:"Heat Wave",emoji:"🌞",trans:"Ola de calor",ex:"Heat wave was affecting."},{word:"Dust Storm",emoji:"🌪️",trans:"Tormenta de polvo",ex:"Dust storm was moving."},{word:"Icy",emoji:"🧊",trans:"Helado",ex:"Roads were icy."},{word:"Spring",emoji:"🌸",trans:"Primavera",ex:"It was raining in spring."},{word:"Summer",emoji:"☀️",trans:"Verano",ex:"Sun was shining."},{word:"Autumn",emoji:"🍂",trans:"Otoño",ex:"Leaves were falling."},{word:"Smoggy",emoji:"🌫️",trans:"Smog",ex:"The city was smoggy."},{word:"Cool",emoji:"🧊",trans:"Fresco",ex:"The air was cool."}
-        ];
-        let currentVocabIndex=0;
-        function updateVocab(){ let w=vocabulary[currentVocabIndex]; document.getElementById('vocabEmoji').innerText=w.emoji; document.getElementById('vocabWord').innerText=w.word; document.getElementById('vocabTranslation').innerText=w.trans; document.getElementById('vocabExample').innerHTML=`"${w.ex}"`; document.getElementById('vocabCounter').innerText=`${currentVocabIndex+1}/${vocabulary.length}`; document.getElementById('vocabProgress').style.width=`${((currentVocabIndex+1)/vocabulary.length)*100}%`; }
-        function nextVocab(){ currentVocabIndex=(currentVocabIndex+1)%vocabulary.length; updateVocab(); speakWord(); }
-        function prevVocab(){ currentVocabIndex=(currentVocabIndex-1+vocabulary.length)%vocabulary.length; updateVocab(); speakWord(); }
-        function speakWord(){ let u=new SpeechSynthesisUtterance(vocabulary[currentVocabIndex].word); u.lang='en-US'; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); }
+    /**
+     * English Learning Platform - Modular Architecture
+     * @version 2.0.0
+     * @author Wilfran Luis Decena
+     */
+
+    // ===== UTILITIES =====
+    const Utils = {
+        // Sanitize user input to prevent XSS
+        sanitize: (str) => {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        },
         
-        // QUIZ (mejorado, mismas preguntas pero más pulido)
-        const quizQuestions=[{q:"What tense describes an action happening in the past?",opts:["Past Continuous","Present Simple","Future"],ans:0},{q:"Fill: 'It __ raining when I arrived'",opts:["was","is","were"],ans:0},{q:"Which sentence is correct?",opts:["They was playing","They were playing","They are playing"],ans:1},{q:"Lightning __ flashing during the storm.",opts:["was","were","is"],ans:0},{q:"The temperature __ rising quickly.",opts:["was","were","am"],ans:0},{q:"Complete: While it __ snowing, we __ playing",opts:["was/were","were/was","is/am"],ans:0},{q:"A dust storm __ moving across desert.",opts:["was","were","is"],ans:0},{q:"True or False: Past Continuous = Subject + am/is/are + verb-ing",opts:["True","False"],ans:1},{q:"The rainbow __ appearing in the sky.",opts:["was","were","are"],ans:0},{q:"The city __ looking smoggy that day.",opts:["was","is","were"],ans:0},{q:"I __ sleeping when it was storming.",opts:["was","were","am"],ans:0},{q:"Which shows interrupted action?",opts:["The wind blew","The wind was blowing when I arrived","The wind blows"],ans:1},{q:"She __ reading while it was cloudy.",opts:["was","were","is"],ans:0},{q:"What does '-ing' show in Past Continuous?",opts:["Ongoing action","Completed action","Future"],ans:0},{q:"The seasons __ changing gradually.",opts:["were","was","is"],ans:0},{q:"It was freezing early __ the morning.",opts:["in","on","at"],ans:0},{q:"They were measuring the temperature __.",opts:["in Celsius","in pounds","in meters"],ans:0},{q:"I was learning English __ it was raining.",opts:["while","when","because"],ans:0},{q:"The sky was getting foggy is Past Continuous?",opts:["True","False"],ans:0},{q:"The weather __ becoming dangerous.",opts:["was","were","are"],ans:0},{q:"Hail __ falling heavily.",opts:["was","were","is"],ans:0},{q:"The roads __ becoming icy.",opts:["were","was","is"],ans:0},{q:"They were playing while the wind __ blowing.",opts:["was","were","is"],ans:0},{q:"What is Past Continuous used for?",opts:["Actions in progress past","Future plans","Habits"],ans:0},{q:"Which word completes: 'The sun __ shining'",opts:["was","were","am"],ans:0}];
-        let quizIndex=0,quizScore=0,answeredLock=false;
-        function startQuiz(){quizIndex=0;quizScore=0;answeredLock=false;document.getElementById('quizResults').classList.add('hidden');document.getElementById('quizContent').classList.remove('hidden');loadQuizQuestion();}
-        function loadQuizQuestion(){let q=quizQuestions[quizIndex];document.getElementById('qNum').innerText=`${quizIndex+1}/25`;document.getElementById('quizQuestion').innerText=q.q;document.getElementById('quizProgress').style.width=`${(quizIndex/25)*100}%`;let div=document.getElementById('quizAnswers');div.innerHTML='';q.opts.forEach((opt,i)=>{let btn=document.createElement('button');btn.className='w-full p-3 text-left bg-gray-100 rounded-xl quiz-option hover:bg-gray-200 font-medium';btn.innerText=opt;btn.onclick=()=>selectAnswer(i,btn);div.appendChild(btn);});answeredLock=false;}
-        function selectAnswer(idx,btnEl){if(answeredLock)return;answeredLock=true;let isCorrect=(idx===quizQuestions[quizIndex].ans);if(isCorrect)quizScore++;let options=document.querySelectorAll('#quizAnswers .quiz-option');options.forEach(opt=>opt.style.pointerEvents='none');if(isCorrect)btnEl.classList.add('correct-highlight');else{btnEl.classList.add('wrong-highlight');let correctAns=quizQuestions[quizIndex].opts[quizQuestions[quizIndex].ans];for(let o of options){if(o.innerText===correctAns)o.classList.add('correct-highlight');}}setTimeout(()=>{quizIndex++;if(quizIndex<25)loadQuizQuestion();else endQuiz();},700);}
-        function endQuiz(){document.getElementById('quizContent').classList.add('hidden');document.getElementById('quizResults').classList.remove('hidden');document.getElementById('finalScore').innerText=quizScore;}
-        function restartQuiz(){startQuiz();}
+        // Debounce function for performance
+        debounce: (func, wait) => {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        },
         
-        // MATCHING GAME (mejorado)
-        const matchingPairs=[{word:"Sunny",def:"Lots of sun, bright"},{word:"Rainy",def:"Lots of rain"},{word:"Snowy",def:"Covered with snow"},{word:"Windy",def:"Strong wind"},{word:"Stormy",def:"Thunder and lightning"},{word:"Foggy",def:"Thick mist"},{word:"Hot",def:"Very high temperature"},{word:"Cold",def:"Low temperature"}];
-        let matchScore=0,matchFails=0,matched=new Set(),selectedMatch=null;
-        function initMatchingGame(){matchScore=0;matchFails=0;matched.clear();selectedMatch=null;showSection('matchingGame');renderMatching();}
-        function renderMatching(){let html='<div class="grid md:grid-cols-2 gap-6"><div><h3 class="font-bold">📌 Palabras</h3>';matchingPairs.forEach((p,i)=>{if(matched.has(i))html+=`<div class="bg-gray-300 p-3 rounded-xl mb-2 matched line-through">${p.word}</div>`;else html+=`<div class="bg-indigo-500 text-white p-3 rounded-xl mb-2 cursor-pointer match-card" data-type="word" data-idx="${i}">${p.word}</div>`;});html+=`</div><div><h3 class="font-bold">📖 Definiciones</h3>`;matchingPairs.forEach((p,i)=>{if(matched.has(i))html+=`<div class="bg-gray-300 p-3 rounded-xl mb-2 matched">${p.def}</div>`;else html+=`<div class="bg-emerald-500 text-white p-3 rounded-xl mb-2 cursor-pointer match-card" data-type="def" data-idx="${i}">${p.def}</div>`;});html+=`</div></div>`;document.getElementById('matchingContent').innerHTML=html;document.getElementById('matchScore').innerText=matchScore;document.getElementById('matchFails').innerText=matchFails;attachMatchEvents();}
-        function attachMatchEvents(){document.querySelectorAll('.match-card').forEach(card=>{card.addEventListener('click',(e)=>{let type=card.dataset.type;let idx=parseInt(card.dataset.idx);if(matched.has(idx))return;if(!selectedMatch){selectedMatch={type,idx};card.classList.add('selected');}else if(selectedMatch.type!==type && selectedMatch.idx===idx){matchScore++;matched.add(idx);selectedMatch=null;renderMatching();}else{matchFails++;selectedMatch=null;renderMatching();if(matchFails>=3){alert('❌ Perdiste. Reiniciando juego.');initMatchingGame();}}});});}
+        // Show toast notification
+        toast: (message, type = 'success', duration = 3000) => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.setAttribute('role', 'alert');
+            
+            const icons = { success: '✓', error: '✕', warning: '⚠' };
+            toast.innerHTML = `
+                <span class="text-xl" aria-hidden="true">${icons[type] || 'ℹ'}</span>
+                <span>${Utils.sanitize(message)}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        },
         
-        // SENTENCE BUILDER (simplificado funcional)
-        const sentencesData=[{words:["It","raining","was","all","morning"],correct:"It was raining all morning"},{words:["sun","The","shining","was","brightly"],correct:"The sun was shining brightly"},{words:["wind","blowing","The","was","strongly"],correct:"The wind was blowing strongly"},{words:["snowing","It","mountains","was","in","the"],correct:"It was snowing in the mountains"}];
-        let sentIdx=0,sentScoreVal=0,sentFailsVal=0,selectedSentenceWords=[];
-        function initSentenceGame(){sentIdx=0;sentScoreVal=0;sentFailsVal=0;selectedSentenceWords=[];showSection('sentenceGame');renderSentence();}
-        function renderSentence(){let s=sentencesData[sentIdx];let shuffled=[...s.words].sort(()=>Math.random()-0.5);let html=`<p class="font-semibold">Arma la oración correcta:</p><div class="flex flex-wrap gap-2 my-4">`;shuffled.forEach((w,i)=>{let isSel=selectedSentenceWords.some(sw=>sw.word===w && sw.orig===i);html+=`<button class="bg-yellow-300 px-4 py-2 rounded-full ${isSel?'opacity-50 line-through':''}" onclick="toggleSentWord(${i},'${w}')">${w}</button>`;});html+=`</div><div class="bg-gray-100 p-4 rounded-xl mb-3">${selectedSentenceWords.map(sw=>sw.word).join(' ')||'...'}</div><button class="bg-green-500 text-white px-5 py-2 rounded-full" onclick="checkSentence()">Verificar</button><button class="bg-red-400 text-white px-5 py-2 rounded-full ml-2" onclick="resetSentenceGame()">Reset</button>`;document.getElementById('sentenceContent').innerHTML=html;document.getElementById('sentScore').innerText=sentScoreVal;document.getElementById('sentFails').innerText=sentFailsVal;}
-        function toggleSentWord(idx,word){let exist=selectedSentenceWords.findIndex(sw=>sw.orig===idx);if(exist>-1)selectedSentenceWords.splice(exist,1);else selectedSentenceWords.push({word,orig:idx});renderSentence();}
-        function checkSentence(){let user=selectedSentenceWords.map(sw=>sw.word).join(' ');if(user===sentencesData[sentIdx].correct){sentScoreVal++;sentIdx++;selectedSentenceWords=[];if(sentIdx>=sentencesData.length){alert("🎉 Perfecto! Completaste todas.");showSection('games');}else renderSentence();}else{sentFailsVal++;selectedSentenceWords=[];if(sentFailsVal>=3){alert("Juego terminado. Reiniciando.");initSentenceGame();}else renderSentence();}}
-        function resetSentenceGame(){selectedSentenceWords=[];renderSentence();}
+        // Speak text using Web Speech API
+        speak: (text, lang = 'en-US', rate = 0.9) => {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop previous
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                utterance.rate = rate;
+                window.speechSynthesis.speak(utterance);
+                return true;
+            }
+            Utils.toast('Speech not supported in this browser', 'warning');
+            return false;
+        },
         
-        // Guess Game
-        const guessBank=[{def:"Lots of sun, bright",word:"Sunny"},{def:"Water falling from sky",word:"Rainy"},{def:"Very high temperature",word:"Hot"},{def:"Colored arc in sky",word:"Rainbow"},{def:"Strong air movement",word:"Windy"}];
-        let guessIdx=0,guessScoreVal=0,guessFailsVal=0;
-        function initGuessGame(){guessIdx=0;guessScoreVal=0;guessFailsVal=0;showSection('guessGame');renderGuess();}
-        function renderGuess(){let g=guessBank[guessIdx];let opts=[g.word,...guessBank.filter(x=>x!==g).slice(0,3).map(x=>x.word)].sort(()=>Math.random()-0.5);let html=`<p class="text-xl font-bold">${g.def}</p><div class="space-y-2 mt-4">`;opts.forEach(o=>{html+=`<button class="w-full bg-purple-100 p-3 rounded-xl quiz-option" onclick="guessAnswer('${o}')">${o}</button>`;});html+=`</div>`;document.getElementById('guessContent').innerHTML=html;document.getElementById('guessScore').innerText=guessScoreVal;document.getElementById('guessFails').innerText=guessFailsVal;}
-        window.guessAnswer=(ans)=>{if(ans===guessBank[guessIdx].word){guessScoreVal++;guessIdx++;if(guessIdx>=guessBank.length){alert("Ganaste! 🎉");showSection('games');}else renderGuess();}else{guessFailsVal++;if(guessFailsVal>=3){alert("Perdiste! Reinicio");initGuessGame();}else renderGuess();}};
+        // Save progress to localStorage
+        saveProgress: (key, data) => {
+            try {
+                const progress = JSON.parse(localStorage.getItem('englishProgress') || '{}');
+                progress[key] = { ...data, timestamp: Date.now() };
+                localStorage.setItem('englishProgress', JSON.stringify(progress));
+            } catch (e) {
+                console.warn('Could not save progress:', e);
+            }
+        },
         
-        // Falling Words mejorado
-        let fallIntervalId=null,fallScoreVal=0,fallFailsVal=0;
-        function initFallingGame(){if(fallIntervalId)clearInterval(fallIntervalId);fallScoreVal=0;fallFailsVal=0;document.getElementById('gameBoard').innerHTML='';showSection('fallingGame');document.getElementById('fallScore').innerText='0';document.getElementById('fallFails').innerText='0';startFallingLoop();}
-        function startFallingLoop(){fallIntervalId=setInterval(()=>{let isCorrect=Math.random()>0.5;let wordBank=isCorrect?["sunny","rainy","snowy","windy","hot","warm","foggy"]:["chair","phone","bottle","car","book"];let word=wordBank[Math.floor(Math.random()*wordBank.length)];let board=document.getElementById('gameBoard');let el=document.createElement('div');el.className='falling-item';el.style.left=Math.random()*85+'%';el.style.backgroundColor=isCorrect?'#22c55e':'#ef4444';el.style.color='white';el.innerText=word;el.onclick=()=>{if(isCorrect){fallScoreVal++;}else{fallFailsVal++;}document.getElementById('fallScore').innerText=fallScoreVal;document.getElementById('fallFails').innerText=fallFailsVal;el.remove();if(fallFailsVal>=5){clearInterval(fallIntervalId);alert(`Juego terminado! Puntaje: ${fallScoreVal}`);showSection('games');}};board.appendChild(el);setTimeout(()=>{if(el.parentNode){if(isCorrect&&el.parentNode){fallFailsVal++;document.getElementById('fallFails').innerText=fallFailsVal;if(fallFailsVal>=5){clearInterval(fallIntervalId);alert(`Fin del juego! Puntaje: ${fallScoreVal}`);showSection('games');}}el.remove();}},4200);},900);}
-        function stopFallingAndExit(){if(fallIntervalId)clearInterval(fallIntervalId);showSection('games');}
+        // Load progress from localStorage
+        loadProgress: (key) => {
+            try {
+                const progress = JSON.parse(localStorage.getItem('englishProgress') || '{}');
+                return progress[key] || null;
+            } catch {
+                return null;
+            }
+        }
+    };
+
+    // ===== APP CORE =====
+    const App = {
+        config: {
+            teacher: 'Wilfran Luis Decena',
+            monthValue: 'Compañerismo y Participación',
+            school: 'English Class'
+        },
         
-        // Navegación y fecha
-        function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='vocabulary')updateVocab();if(id==='quiz')startQuiz();window.scrollTo({top:0,behavior:'smooth'});}
-        document.getElementById('currentDate').innerText=new Date().toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-        document.getElementById('teacherInfo').innerHTML='👨‍🏫 Wilfran Luis Decena';
-        document.getElementById('monthValue').innerHTML='📅 Compañerismo y Participación';
-        document.getElementById('schoolName').innerHTML='🌎 EcoLingo Class';
-        window.speakWord=speakWord; window.nextVocab=nextVocab; window.prevVocab=prevVocab; window.showSection=showSection; window.restartQuiz=restartQuiz; window.initMatchingGame=initMatchingGame; window.initSentenceGame=initSentenceGame; window.initGuessGame=initGuessGame; window.initFallingGame=initFallingGame; window.stopFallingAndExit=stopFallingAndExit; window.toggleSentWord=toggleSentWord; window.checkSentence=checkSentence; window.resetSentenceGame=resetSentenceGame; window.guessAnswer=guessAnswer;
-        updateVocab();
+        init() {
+            // Update date
+            this.updateDate();
+            
+            // Initialize SDK if available
+            this.initSDK();
+            
+            // Setup keyboard navigation
+            this.setupKeyboardNav();
+            
+            // Load saved progress
+            this.loadProgress();
+            
+            console.log('🚀 English Learning Platform initialized');
+        },
+        
+        updateDate() {
+            const dateEl = document.getElementById('currentDate');
+            if (dateEl) {
+                const today = new Date();
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                dateEl.textContent = today.toLocaleDateString('es-DO', options);
+                dateEl.setAttribute('datetime', today.toISOString());
+            }
+        },
+        
+        initSDK() {
+            if (window.elementSdk) {
+                const defaultConfig = {
+                    teacher_name: this.config.teacher,
+                    month_value: this.config.monthValue,
+                    school_name: this.config.school
+                };
+                
+                window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange: async (newConfig) => {
+                        this.config = { ...defaultConfig, ...newConfig };
+                        this.updateUI();
+                    },
+                    mapToCapabilities: () => ({
+                        recolorables: [],
+                        borderables: [],
+                        fontEditable: undefined,
+                        fontSizeable: undefined
+                    }),
+                    mapToEditPanelValues: (cfg) => new Map([
+                        ['teacher_name', cfg.teacher_name],
+                        ['month_value', cfg.month_value],
+                        ['school_name', cfg.school_name]
+                    ])
+                });
+            }
+        },
+        
+        updateUI() {
+            const els = {
+                'schoolName': this.config.school_name || this.config.school,
+                'teacherInfo': `👨‍🏫 <strong>Docente:</strong> ${this.config.teacher_name || this.config.teacher}`,
+                'monthValue': `📅 <strong>Valor del mes:</strong> ${this.config.month_value || this.config.monthValue}`
+            };
+            
+            Object.entries(els).forEach(([id, content]) => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = content;
+            });
+        },
+        
+        navigate(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            // Show target section
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.classList.add('active');
+                target.setAttribute('aria-hidden', 'false');
+                
+                // Initialize section if needed
+                if (sectionId === 'vocabulary') Vocabulary.init();
+                if (sectionId === 'quiz') Quiz.init();
+                
+                // Focus main content for accessibility
+                document.getElementById('main-content')?.scrollTo(0, 0);
+                
+                // Save navigation progress
+                Utils.saveProgress('lastSection', { section: sectionId });
+            }
+        },
+        
+        handleCardKey(event, sectionId) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                this.navigate(sectionId);
+            }
+        },
+        
+        setupKeyboardNav() {
+            document.addEventListener('keydown', (e) => {
+                // ESC to go home
+                if (e.key === 'Escape') {
+                    const activeSection = document.querySelector('.section.active');
+                    if (activeSection && activeSection.id !== 'home') {
+                        e.preventDefault();
+                        this.navigate('home');
+                    }
+                }
+            });
+        },
+        
+        loadProgress() {
+            const lastSection = Utils.loadProgress('lastSection');
+            if (lastSection?.section && lastSection.section !== 'home') {
+                // Optional: auto-resume last section
+                // this.navigate(lastSection.section);
+            }
+        }
+    };
+
+    // ===== VOCABULARY MODULE =====
+    const Vocabulary = {
+        data: [
+            { word: 'Sunny', emoji: '☀️', translation: 'Soleado', example: 'The sun was shining brightly.' },
+            { word: 'Rainy', emoji: '🌧️', translation: 'Lluvioso', example: 'It was raining all morning.' },
+            { word: 'Cloudy', emoji: '☁️', translation: 'Nublado', example: 'It was getting cloudy in the afternoon.' },
+            { word: 'Snowy', emoji: '❄️', translation: 'Nevado', example: 'It was snowing in the mountains.' },
+            { word: 'Rainbow', emoji: '🌈', translation: 'Arcoíris', example: 'A rainbow was appearing in the sky.' },
+            { word: 'Windy', emoji: '💨', translation: 'Ventoso', example: 'The wind was blowing strongly.' },
+            { word: 'Stormy', emoji: '⛈️', translation: 'Tormentoso', example: 'The storm was coming quickly.' },
+            { word: 'Foggy', emoji: '🌫️', translation: 'Brumoso', example: 'The sky was getting foggy.' },
+            { word: 'Lightning', emoji: '⚡', translation: 'Rayo', example: 'Lightning was flashing in the night.' },
+            { word: 'Hot', emoji: '🔥', translation: 'Caliente', example: 'It was getting hot at noon.' },
+            { word: 'Warm', emoji: '🌤️', translation: 'Templado', example: 'The weather was becoming warm.' },
+            { word: 'Cool', emoji: '🧊', translation: 'Fresco', example: 'The air was feeling cool.' },
+            { word: 'Cold', emoji: '❄️', translation: 'Frío', example: 'It was getting cold at night.' },
+            { word: 'Freezing', emoji: '🥶', translation: 'Congelado', example: 'It was freezing early in the morning.' },
+            { word: 'Heat Wave', emoji: '🌞', translation: 'Onda de calor', example: 'A heat wave was affecting the city.' },
+            { word: 'Hurricane', emoji: '🌀', translation: 'Huracán', example: 'A hurricane was forming in the ocean.' },
+            { word: 'Hail', emoji: '🧊', translation: 'Granizo', example: 'Hail was falling heavily.' },
+            { word: 'Humid', emoji: '💧', translation: 'Húmedo', example: 'The air was becoming humid.' },
+            { word: 'Smoggy', emoji: '🌫️', translation: 'Contaminado', example: 'The city was looking smoggy.' },
+            { word: 'Dust Storm', emoji: '🌪️', translation: 'Tormenta de polvo', example: 'A dust storm was moving across the desert.' },
+            { word: 'Icy', emoji: '🧊', translation: 'Helado', example: 'The roads were becoming icy.' },
+            { word: 'Blizzard', emoji: '❄️', translation: 'Ventisca', example: 'A snowstorm was hitting the town.' },
+            { word: 'Spring', emoji: '🌸', translation: 'Primavera', example: 'It was raining during spring.' },
+            { word: 'Summer', emoji: '☀️', translation: 'Verano', example: 'The sun was shining in summer.' },
+            { word: 'Autumn', emoji: '🍂', translation: 'Otoño', example: 'Leaves were falling in autumn.' }
+        ],
+        
+        currentIndex: 0,
+        
+        init() {
+            this.currentIndex = 0;
+            this.render();
+            // Auto-play first word after short delay
+            setTimeout(() => this.speak(), 500);
+        },
+        
+        render() {
+            const word = this.data[this.currentIndex];
+            const total = this.data.length;
+            
+            // Update DOM
+            document.getElementById('vocabEmoji').textContent = word.emoji;
+            document.getElementById('vocabWord').innerHTML = `${word.word} <span aria-hidden="true">🔊</span>`;
+            document.getElementById('vocabTranslation').textContent = word.translation;
+            document.getElementById('vocabExample').textContent = `"${word.example}"`;
+            document.getElementById('vocabCounter').textContent = `${this.currentIndex + 1} / ${total}`;
+            document.getElementById('vocabProgress').style.width = `${((this.currentIndex + 1) / total) * 100}%`;
+            document.getElementById('vocabProgress').setAttribute('aria-valuenow', this.currentIndex + 1);
+            document.getElementById('vocabProgress').setAttribute('aria-valuemax', total);
+        },
+        
+        next() {
+            this.currentIndex = (this.currentIndex + 1) % this.data.length;
+            this.render();
+            this.speak();
+            Utils.toast(`📚 ${this.data[this.currentIndex].word}`, 'success', 1500);
+        },
+        
+        speak() {
+            const word = this.data[this.currentIndex].word;
+            if (Utils.speak(word)) {
+                Utils.toast(`🔊 Pronunciando: ${word}`, 'success', 1000);
+            }
+        }
+    };
+
+    // ===== QUIZ MODULE =====
+    const Quiz = {
+        questions: [
+            { q: "What tense describes an action happening in the past?", opts: ["Past Continuous", "Present Simple", "Future Simple", "Present Perfect"], ans: 0 },
+            { q: "Fill: 'It __ raining when I arrived'", opts: ["was", "is", "are", "were"], ans: 0 },
+            { q: "Which sentence is correct?", opts: ["They was playing", "They were playing", "They are playing", "They was be playing"], ans: 1 },
+            { q: "The rainbow __ appearing in the sky.", opts: ["is", "was", "were", "been"], ans: 1 },
+            { q: "True or False: Past Continuous = Subject + am/is/are + verb + ing", opts: ["True", "False"], ans: 1 },
+            { q: "Lightning __ flashing during the storm.", opts: ["flash", "was flashing", "flashes", "will flash"], ans: 1 },
+            { q: "The temperature __ rising quickly.", opts: ["am", "are", "was", "were"], ans: 2 },
+            { q: "Which uses Past Continuous?", opts: ["I eat lunch", "I was eating lunch", "I eat lunch now", "I will eat lunch"], ans: 1 },
+            { q: "The city __ looking smoggy that day.", opts: ["was", "is", "are", "been"], ans: 0 },
+            { q: "Complete: 'While it __snowing, we __playing'", opts: ["was, were", "were, was", "is, are", "am, is"], ans: 0 },
+            { q: "A dust storm __ moving across the desert.", opts: ["move", "moves", "was moving", "been moving"], ans: 2 },
+            { q: "What was happening during the heat wave?", opts: ["The temperature was dropping", "The temperature was rising", "The temperature was stable", "No change"], ans: 1 },
+            { q: "Hail __ falling heavily.", opts: ["was", "is", "are", "been"], ans: 0 },
+            { q: "True or False: 'They were talking while it was raining' uses two Past Continuous actions", opts: ["True", "False"], ans: 0 },
+            { q: "The roads __ becoming icy.", opts: ["was", "were", "is", "are"], ans: 1 },
+            { q: "I __ sleeping when it was storming.", opts: ["was", "is", "are", "been"], ans: 0 },
+            { q: "Which sentence shows interrupted action?", opts: ["The wind blew", "The wind was blowing when I arrived", "The wind blows", "The wind will blow"], ans: 1 },
+            { q: "She __ reading while it was cloudy.", opts: ["was", "is", "were", "are"], ans: 0 },
+            { q: "What does '-ing' form show in Past Continuous?", opts: ["Completed action", "Ongoing action", "Future action", "Habitual action"], ans: 1 },
+            { q: "The seasons __ changing gradually.", opts: ["was", "were", "is", "am"], ans: 1 },
+            { q: "It was freezing __ early in the morning.", opts: ["later", "always", "never"], ans: 2 },
+            { q: "They were measuring the temperature __.", opts: ["in Celsius", "in Kelvin", "in Rankine"], ans: 0 },
+            { q: "Complete: 'I was learning English __ it was raining'", opts: ["while", "when", "during"], ans: 0 },
+            { q: "True or False: The sky was getting foggy is Past Continuous.", opts: ["True", "False"], ans: 0 },
+            { q: "The weather __ becoming dangerous.", opts: ["was", "is", "are", "were"], ans: 0 }
+        ],
+        
+        index: 0,
+        score: 0,
+        answered: [],
+        
+        init() {
+            this.index = 0;
+            this.score = 0;
+            this.answered = [];
+            document.getElementById('quizResults').classList.add('hidden');
+            document.getElementById('quizContent').classList.remove('hidden');
+            document.getElementById('qTotal').textContent = this.questions.length;
+            this.loadQuestion();
+        },
+        
+        loadQuestion() {
+            const q = this.questions[this.index];
+            document.getElementById('qNum').textContent = this.index + 1;
+            document.getElementById('quizQuestion').textContent = q.q;
+            document.getElementById('quizProgress').style.width = `${(this.index / this.questions.length) * 100}%`;
+            
+            const answersDiv = document.getElementById('quizAnswers');
+            answersDiv.innerHTML = '';
+            
+            q.opts.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full p-4 text-left bg-gray-100 rounded-lg quiz-option hover:bg-gray-200 transition-colors text-gray-800 font-medium';
+                btn.setAttribute('role', 'radio');
+                btn.setAttribute('aria-label', `Opción ${i + 1}: ${opt}`);
+                btn.textContent = opt;
+                btn.onclick = () => this.selectAnswer(i, btn);
+                btn.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.selectAnswer(i, btn);
+                    }
+                };
+                answersDiv.appendChild(btn);
+            });
+        },
+        
+        selectAnswer(selectedIdx, btnElement) {
+            // Prevent multiple answers
+            if (this.answered.includes(this.index)) return;
+            this.answered.push(this.index);
+            
+            const q = this.questions[this.index];
+            const buttons = document.querySelectorAll('#quizAnswers button');
+            
+            // Disable all buttons
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.remove('hover:bg-gray-200');
+            });
+            
+            // Show feedback
+            if (selectedIdx === q.ans) {
+                btnElement.classList.add('correct', 'bg-success', 'text-white');
+                this.score++;
+                Utils.toast('✅ Correct!', 'success', 1000);
+            } else {
+                btnElement.classList.add('incorrect', 'bg-error', 'text-white');
+                // Show correct answer
+                buttons[q.ans].classList.add('correct', 'bg-success', 'text-white');
+                Utils.toast('❌ Incorrect', 'error', 1500);
+            }
+            
+            // Next question or finish
+            setTimeout(() => {
+                this.index++;
+                if (this.index < this.questions.length) {
+                    this.loadQuestion();
+                } else {
+                    this.finish();
+                }
+            }, 1200);
+        },
+        
+        finish() {
+            document.getElementById('quizContent').classList.add('hidden');
+            document.getElementById('quizResults').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = this.score;
+            
+            // Save result
+            Utils.saveProgress('quiz', { score: this.score, total: this.questions.length, date: new Date().toISOString() });
+            
+            // Celebration message
+            const percentage = (this.score / this.questions.length) * 100;
+            if (percentage >= 90) Utils.toast('🏆 Excellent! Perfect score!', 'success', 4000);
+            else if (percentage >= 70) Utils.toast('🎉 Great job! Keep practicing!', 'success', 3000);
+            else if (percentage >= 50) Utils.toast('👍 Good effort! Review and try again', 'warning', 3000);
+            else Utils.toast('📚 Keep studying! You can do it!', 'warning', 3000);
+        },
+        
+        restart() {
+            this.init();
+            Utils.toast('🔄 Quiz restarted', 'success', 1500);
+        }
+    };
+
+    // ===== GAMES MODULE =====
+    const Games = {
+        active: null,
+        intervals: {},
+        
+        start(gameType) {
+            this.stopAll();
+            this.active = gameType;
+            
+            switch(gameType) {
+                case 'matching': MatchingGame.init(); break;
+                case 'sentence': SentenceGame.init(); break;
+                case 'guess': GuessGame.init(); break;
+                case 'falling': FallingGame.init(); break;
+            }
+        },
+        
+        stop(gameType) {
+            if (this.intervals[gameType]) {
+                clearInterval(this.intervals[gameType]);
+                delete this.intervals[gameType];
+            }
+            if (this.active === gameType) this.active = null;
+        },
+        
+        stopAll() {
+            Object.keys(this.intervals).forEach(key => {
+                clearInterval(this.intervals[key]);
+            });
+            this.intervals = {};
+            this.active = null;
+        }
+    };
+
+    // ===== MATCHING GAME =====
+    const MatchingGame = {
+        pairs: [
+            { word: 'Sunny', def: 'Lots of sun, bright and warm' },
+            { word: 'Rainy', def: 'Lots of rain, wet weather' },
+            { word: 'Snowy', def: 'Covered with snow, very cold' },
+            { word: 'Windy', def: 'Strong wind, breezy' },
+            { word: 'Stormy', def: 'Strong winds, rain, lightning' },
+            { word: 'Hot', def: 'Very high temperature' },
+            { word: 'Cold', def: 'Very low temperature' },
+            { word: 'Foggy', def: 'Thick water vapor blocking view' }
+        ],
+        
+        score: 0,
+        fails: 0,
+        matched: new Set(),
+        selected: null,
+        
+        init() {
+            this.score = 0;
+            this.fails = 0;
+            this.matched.clear();
+            this.selected = null;
+            this.render();
+            App.navigate('matchingGame');
+        },
+        
+        render() {
+            const container = document.getElementById('matchingContent');
+            const available = this.pairs.filter((_, i) => !this.matched.has(i));
+            
+            let html = `
+                <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Words</h3>
+                    <div class="space-y-2" id="wordsList">
+            `;
+            
+            this.pairs.forEach((p, i) => {
+                const isMatched = this.matched.has(i);
+                html += `
+                    <button class="w-full p-3 rounded-lg match-item text-left font-medium transition-all ${
+                        isMatched ? 'bg-gray-400 text-white matched cursor-not-allowed' : 'bg-primary-500 text-white hover:bg-primary-600'
+                    }" ${isMatched ? 'disabled' : `onclick="MatchingGame.select('word', ${i})"`} aria-label="${p.word}">
+                        ${p.word}
+                    </button>
+                `;
+            });
+            
+            html += `</div></div><div>
+                <h3 class="text-lg font-bold text-gray-700 mb-3">Definitions</h3>
+                <div class="space-y-2" id="defsList">
+            `;
+            
+            // Shuffle definitions for display
+            const shuffled = [...available].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(p => {
+                const idx = this.pairs.indexOf(p);
+                const isMatched = this.matched.has(idx);
+                html += `
+                    <button class="w-full p-3 rounded-lg match-item text-left text-sm transition-all ${
+                        isMatched ? 'bg-gray-400 text-white matched cursor-not-allowed' : 'bg-green-500 text-white hover:bg-green-600'
+                    }" ${isMatched ? 'disabled' : `onclick="MatchingGame.select('def', ${idx})"`} aria-label="${p.def}">
+                        ${p.def}
+                    </button>
+                `;
+            });
+            
+            html += '</div></div>';
+            container.innerHTML = html;
+            
+            // Update score display
+            document.getElementById('matchScore').textContent = this.score;
+            document.getElementById('matchFails').textContent = this.fails;
+        },
+        
+        select(type, idx) {
+            if (this.matched.has(idx)) return;
+            
+            // First selection
+            if (!this.selected) {
+                this.selected = { type, idx };
+                this.highlight(type, idx, true);
+                return;
+            }
+            
+            // Same item clicked - deselect
+            if (this.selected.type === type && this.selected.idx === idx) {
+                this.highlight(type, idx, false);
+                this.selected = null;
+                return;
+            }
+            
+            // Cross-type selection - check match
+            if (this.selected.type !== type) {
+                if (this.selected.idx === idx) {
+                    // ✅ Correct match
+                    this.matched.add(idx);
+                    this.score++;
+                    Utils.toast('🎯 Match!', 'success', 800);
+                    
+                    if (this.matched.size === this.pairs.length) {
+                        setTimeout(() => {
+                            Utils.toast('🏆 All matched! Great job!', 'success', 4000);
+                            App.navigate('games');
+                        }, 500);
+                    }
+                } else {
+                    // ❌ Wrong match
+                    this.fails++;
+                    this.wrongAnimation();
+                    Utils.toast('❌ Try again', 'error', 1000);
+                    
+                    if (this.fails >= 3) {
+                        setTimeout(() => {
+                            Utils.toast('💡 Game Over! Practice more', 'warning', 3000);
+                            App.navigate('games');
+                        }, 500);
+                        return;
+                    }
+                }
+                
+                // Reset selection
+                this.highlight(this.selected.type, this.selected.idx, false);
+                this.selected = null;
+                this.render();
+            }
+        },
+        
+        highlight(type, idx, add) {
+            const selector = type === 'word' ? '#wordsList' : '#defsList';
+            const items = document.querySelectorAll(`${selector} button`);
+            if (items[idx]) {
+                items[idx].classList.toggle('selected', add);
+            }
+        },
+        
+        wrongAnimation() {
+            document.querySelectorAll('.match-item').forEach(el => {
+                el.classList.add('wrong');
+                setTimeout(() => el.classList.remove('wrong'), 300);
+            });
+        }
+    };
+
+    // ===== SENTENCE GAME =====
+    const SentenceGame = {
+        sentences: [
+            { words: ['It', 'was', 'raining', 'all', 'morning'], correct: 'It was raining all morning' },
+            { words: ['The', 'sun', 'was', 'shining', 'brightly'], correct: 'The sun was shining brightly' },
+            { words: ['The', 'wind', 'was', 'blowing', 'strongly'], correct: 'The wind was blowing strongly' },
+            { words: ['It', 'was', 'snowing', 'in', 'the', 'mountains'], correct: 'It was snowing in the mountains' },
+            { words: ['A', 'rainbow', 'was', 'appearing', 'in', 'the', 'sky'], correct: 'A rainbow was appearing in the sky' },
+            { words: ['The', 'storm', 'was', 'coming', 'quickly'], correct: 'The storm was coming quickly' },
+            { words: ['The', 'sky', 'was', 'getting', 'foggy'], correct: 'The sky was getting foggy' },
+            { words: ['Lightning', 'was', 'flashing', 'in', 'the', 'night'], correct: 'Lightning was flashing in the night' }
+        ],
+        
+        current: 0,
+        score: 0,
+        fails: 0,
+        selected: [],
+        
+        init() {
+            this.current = 0;
+            this.score = 0;
+            this.fails = 0;
+            this.selected = [];
+            this.render();
+            App.navigate('sentenceGame');
+        },
+        
+        render() {
+            const sent = this.sentences[this.current];
+            const shuffled = [...sent.words].sort(() => Math.random() - 0.5);
+            const container = document.getElementById('sentenceContent');
+            
+            let html = `
+                <p class="text-lg mb-5 text-gray-700 font-medium">Arrange the words to form a correct sentence:</p>
+                <div class="flex flex-wrap gap-2 mb-5" id="wordBank" role="listbox" aria-label="Palabras para ordenar">
+            `;
+            
+            shuffled.forEach((word, i) => {
+                const isSelected = this.selected.some(s => s.idx === i);
+                html += `
+                    <button class="px-4 py-2 bg-yellow-400 text-gray-800 font-bold rounded-lg transition-all hover:scale-105 active:scale-95 ${isSelected ? 'opacity-50 cursor-not-allowed' : ''}" 
+                            onclick="SentenceGame.toggleWord(${i}, '${word}')"
+                            ${isSelected ? 'disabled' : ''}
+                            aria-pressed="${isSelected}"
+                            aria-label="${word}">
+                        ${word}
+                    </button>
+                `;
+            });
+            
+            html += `</div>
+                <div class="bg-gradient-to-r from-blue-100 to-primary-100 p-5 rounded-xl mb-5 min-h-16 text-lg font-semibold flex flex-wrap gap-2 items-center" id="answerArea" aria-live="polite">
+                    ${this.selected.map(s => `<span class="px-3 py-1 bg-white rounded shadow-sm">${s.word}</span>`).join(' ') || '<span class="text-gray-400">Select words above...</span>'}
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button class="btn btn-success flex-1" onclick="SentenceGame.check()">Check Answer</button>
+                    <button class="btn btn-error flex-1" onclick="SentenceGame.reset()">Reset</button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            document.getElementById('sentScore').textContent = this.score;
+            document.getElementById('sentFails').textContent = this.fails;
+        },
+        
+        toggleWord(idx, word) {
+            const existing = this.selected.findIndex(s => s.idx === idx);
+            if (existing >= 0) {
+                this.selected.splice(existing, 1);
+            } else {
+                this.selected.push({ word, idx });
+            }
+            this.render();
+        },
+        
+        check() {
+            const sent = this.sentences[this.current];
+            const answer = this.selected.map(s => s.word).join(' ');
+            
+            if (answer === sent.correct) {
+                this.score++;
+                Utils.toast('✅ Perfect!', 'success', 1000);
+                this.current++;
+                this.selected = [];
+                
+                if (this.current >= this.sentences.length) {
+                    setTimeout(() => {
+                        Utils.toast('🎉 All sentences correct!', 'success', 4000);
+                        App.navigate('games');
+                    }, 500);
+                } else {
+                    this.render();
+                }
+            } else {
+                this.fails++;
+                Utils.toast('❌ Try again', 'error', 1200);
+                this.selected = [];
+                
+                if (this.fails >= 3) {
+                    setTimeout(() => {
+                        Utils.toast('💡 Keep practicing!', 'warning', 3000);
+                        App.navigate('games');
+                    }, 500);
+                } else {
+                    this.render();
+                }
+            }
+        },
+        
+        reset() {
+            this.selected = [];
+            this.render();
+            Utils.toast('🔄 Reset', 'success', 800);
+        }
+    };
+
+    // ===== GUESS GAME =====
+    const GuessGame = {
+        words: [
+            { def: 'Lots of sun, bright', word: 'Sunny' },
+            { def: 'Water falling from sky', word: 'Rainy' },
+            { def: 'Snow everywhere, very cold', word: 'Snowy' },
+            { def: 'Strong air movement', word: 'Windy' },
+            { def: 'Very high temperature', word: 'Hot' },
+            { def: 'Colored arc in sky after rain', word: 'Rainbow' },
+            { def: 'Dangerous weather with strong wind', word: 'Stormy' },
+            { def: 'Thick water vapor blocking view', word: 'Foggy' },
+            { def: 'Bright flash of electricity in sky', word: 'Lightning' },
+            { def: 'Moderately warm and comfortable', word: 'Warm' }
+        ],
+        
+        current: 0,
+        score: 0,
+        fails: 0,
+        
+        init() {
+            this.current = 0;
+            this.score = 0;
+            this.fails = 0;
+            this.render();
+            App.navigate('guessGame');
+        },
+        
+        render() {
+            const g = this.words[this.current];
+            const options = [g.word, ...this.words.filter(w => w.word !== g.word).slice(0, 3).map(w => w.word)].sort(() => Math.random() - 0.5);
+            
+            let html = `<p class="text-xl mb-5 text-gray-800 font-medium">${g.def}</p><div class="space-y-3">`;
+            
+            options.forEach(opt => {
+                html += `
+                    <button class="w-full p-4 bg-primary-100 hover:bg-primary-200 rounded-lg quiz-option transition-colors text-gray-800 font-medium" 
+                            onclick="GuessGame.answer('${opt}')">
+                        ${opt}
+                    </button>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('guessContent').innerHTML = html;
+            document.getElementById('guessScore').textContent = this.score;
+            document.getElementById('guessFails').textContent = this.fails;
+        },
+        
+        answer(selected) {
+            const correct = this.words[this.current].word;
+            
+            if (selected === correct) {
+                this.score++;
+                Utils.speak(correct);
+                Utils.toast(`✅ ${correct}!`, 'success', 1000);
+                this.current++;
+                
+                if (this.current >= this.words.length) {
+                    setTimeout(() => {
+                        Utils.toast('🏆 Perfect score!', 'success', 4000);
+                        App.navigate('games');
+                    }, 500);
+                } else {
+                    this.render();
+                }
+            } else {
+                this.fails++;
+                Utils.toast('❌ Try again', 'error', 1000);
+                
+                if (this.fails >= 3) {
+                    setTimeout(() => {
+                        Utils.toast('💡 The answer was: ' + correct, 'warning', 4000);
+                        App.navigate('games');
+                    }, 500);
+                } else {
+                    this.render();
+                }
+            }
+        }
+    };
+
+    // ===== FALLING WORDS GAME =====
+    const FallingGame = {
+        correctWords: ['sunny', 'rainy', 'snowy', 'windy', 'hot', 'cold', 'warm', 'foggy', 'stormy', 'rainbow', 'lightning'],
+        wrongWords: ['computer', 'table', 'phone', 'book', 'car', 'house', 'tree', 'water'],
+        
+        score: 0,
+        fails: 0,
+        interval: null,
+        
+        init() {
+            this.score = 0;
+            this.fails = 0;
+            document.getElementById('gameBoard').innerHTML = '';
+            App.navigate('fallingGame');
+            this.start();
+        },
+        
+        start() {
+            const board = document.getElementById('gameBoard');
+            
+            this.interval = setInterval(() => {
+                if (Games.active !== 'falling') return;
+                
+                const isCorrect = Math.random() > 0.4;
+                const words = isCorrect ? this.correctWords : this.wrongWords;
+                const word = words[Math.floor(Math.random() * words.length)];
+                
+                const el = document.createElement('div');
+                el.className = 'game-word';
+                el.style.left = `${Math.random() * 85 + 5}%`;
+                el.style.backgroundColor = isCorrect ? '#10b981' : '#ef4444';
+                el.textContent = word;
+                el.setAttribute('role', 'button');
+                el.setAttribute('tabindex', '0');
+                el.setAttribute('aria-label', `${word} - ${isCorrect ? 'correct word' : 'wrong word'}`);
+                
+                el.onclick = () => this.click(el, isCorrect, word);
+                el.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click(el, isCorrect, word);
+                    }
+                };
+                
+                board.appendChild(el);
+                
+                // Auto-remove after animation
+                setTimeout(() => {
+                    if (el.parentElement && isCorrect) {
+                        // Missed correct word = fail
+                        this.fails++;
+                        this.updateScore();
+                        if (this.fails >= 5) this.gameOver();
+                    }
+                    el.remove();
+                }, 5000);
+                
+            }, 900);
+            
+            Games.intervals['falling'] = this.interval;
+        },
+        
+        click(el, isCorrect, word) {
+            // Pronounce the word
+            Utils.speak(word);
+            
+            if (isCorrect) {
+                this.score++;
+                Utils.toast(`+1 ${word}`, 'success', 600);
+            } else {
+                this.fails++;
+                Utils.toast(`❌ ${word} is wrong`, 'error', 1000);
+            }
+            
+            this.updateScore();
+            el.remove();
+            
+            if (this.fails >= 5) this.gameOver();
+        },
+        
+        updateScore() {
+            document.getElementById('fallScore').textContent = this.score;
+            document.getElementById('fallFails').textContent = this.fails;
+        },
+        
+        gameOver() {
+            Games.stop('falling');
+            Utils.toast(`🎮 Game Over! Score: ${this.score}`, 'warning', 4000);
+            setTimeout(() => App.navigate('games'), 1500);
+        }
+    };
+
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize Lucide icons
+        if (window.lucide) lucide.createIcons();
+        
+        // Initialize app
+        App.init();
+        
+        // Expose modules globally for inline handlers (legacy compatibility)
+        window.App = App;
+        window.Vocabulary = Vocabulary;
+        window.Quiz = Quiz;
+        window.Games = Games;
+        window.MatchingGame = MatchingGame;
+        window.SentenceGame = SentenceGame;
+        window.GuessGame = GuessGame;
+        window.FallingGame = FallingGame;
+    });
     </script>
 </body>
 </html>
